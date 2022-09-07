@@ -1,1 +1,1 @@
-# Group-A---Tic-Tac-Toe
+# Group A - Tic Tac Toe
