@@ -1,0 +1,2 @@
+# this file can be used as packages.json type of file to store dependencies and versions
+# with dependencies in this file you can execute -> pip install -r requirements.txt
