@@ -29,5 +29,5 @@ class Move:
         # Boolean if the move is the first turn
         self.isFirstMove = isFirstMove
 
-
 Move(Source(Position(1,2), 1), Destination(Position(1,2), Orientation.FLAT), Color.WHITE, False)
+
