@@ -1,6 +1,6 @@
 from textual.views import GridView
 from src.board.square import Square
-from src.constants import BS, WS, BL, WL
+from src.constants import Piece
 
 
 class Board(GridView):
@@ -8,7 +8,7 @@ class Board(GridView):
         super().__init__()
         self.squares = []  # All the pices are located here
         for i in range(25):  # A 5x5 gives 25 squares
-            self.squares.append(Square(""))
+            self.squares.append(Square([]))
 
     async def on_mount(self) -> None:
         # The width of the squre
@@ -23,10 +23,11 @@ class Board(GridView):
             self.grid.add_widget(x)
 
         # TODO: This i is just a example so delete later
-        self.move_piece(1, f"{WS}")
-        mp = f"{BS} {BL}\n{BL}\n{WL}\n{BL}\n{WL}\n{BL}\n{WL}"
+        self.move_piece(1, [Piece.WS])
+        mp = [Piece.BS, Piece.BL, Piece.BL, Piece.WL, Piece.BL,
+              Piece.WL, Piece.BL, Piece.WL]
         self.move_piece(8, mp)
-        self.move_piece(11, f"{WS}\n{BL}")
+        self.move_piece(11, [Piece.WS, Piece.BL])
 
-    def move_piece(self, square: int, pieces: str) -> None:
+    def move_piece(self, square: int, pieces: list[Piece]) -> None:
         self.squares[square].set_pieces(pieces)

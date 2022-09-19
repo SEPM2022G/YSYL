@@ -3,7 +3,7 @@ from textual.reactive import Reactive
 from rich.panel import Panel
 from rich.markdown import Markdown
 from rich.console import RenderableType
-from src.constants import BS, WS
+from src.constants import Piece
 
 
 class Player(Widget):
@@ -22,8 +22,8 @@ class Player(Widget):
     def render(self) -> Panel:
         MARKDOWN = "## Player info\n"
         MARKDOWN += f"It is **{self.turn}'s** turn\n\n"
-        MARKDOWN += f"{BS} {self.n_black_pieces} black pieces\n\n"
-        MARKDOWN += f"{WS} {self.n_white_pieces} white pieces"
+        MARKDOWN += f"{Piece.BS.value} {self.n_black_pieces} black pieces\n\n"
+        MARKDOWN += f"{Piece.WS.value} {self.n_white_pieces} white pieces"
         return Markdown(MARKDOWN)
 
     def set_turn(self, turn: str) -> None:

@@ -1,9 +1,11 @@
 from enum import Enum
 
-BS = "⯊"  # BLACK_STANDING
-WS = "◠"  # WHITE_STANDING
-BL = "▬"  # BLACK_LYING
-WL = "▭"  # WHITE_LYING
+
+class Piece(Enum):
+    BS = "⯊"  # BLACK_STANDING
+    WS = "◠"  # WHITE_STANDING
+    BL = "▬"  # BLACK_LYING
+    WL = "▭"  # WHITE_LYING
 
 
 class SelectedOption(Enum):
