@@ -6,8 +6,8 @@ You Stack You Lose, The project for Group G 2022
 
 All changes to the main branch are made through pull requests on GitHub. In
 order to contribute, create a branch with your changes and submit a pull request
-to `main`. Include a title and description of your changes to help reviewers
-understand your changes. 
+to `main`. Include a title that refers to the task in trello together with a
+description of your changes to help reviewers understand your changes.
 
 ```
 Feature: Save a state in the statemanager
