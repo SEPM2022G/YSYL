@@ -10,7 +10,7 @@ class Square(Widget):
     mouse_over: Reactive[RenderableType] = Reactive(False)
     pieces: Reactive[RenderableType] = Reactive([])
 
-    def __init__(self, pieces: list[Piece]) -> None:
+    def __init__(self, pieces: list(Piece)) -> None:
         super().__init__()
         self.pieces = pieces  # The stack of pieces per square
 
@@ -52,7 +52,7 @@ class Square(Widget):
         # TODO: add piece depending on option and color
         self.set_pieces([Piece.WL])
 
-    def get_pieces(self) -> list[Piece]:
+    def get_pieces(self) -> list(Piece):
         return self.pieces
 
     def add_piece(self, piece: Piece) -> None:
@@ -61,7 +61,7 @@ class Square(Widget):
     def remove_piece(self) -> Piece:
         return self.pieces[-1]  # the last piece is the bottom piece
 
-    def set_pieces(self, pieces: list[Piece]) -> None:
+    def set_pieces(self, pieces: list(Piece)) -> None:
         self.pieces = pieces
 
     def on_enter(self) -> None:
