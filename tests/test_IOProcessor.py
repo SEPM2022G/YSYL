@@ -7,15 +7,26 @@ class TestIO(unittest.TestCase):
 
     def testinputToMove(self):
         testmove = Move()
-        testmove.moveNumber = 5
-        testmove.player = 1
-        testmove.colour = "white"
-        testmove.board = "Test State"
-        move = proc.IOProcessor.inputToMove()
-        self.assertEqual(testmove.moveNumber, move.moveNumber)
-        self.assertEqual(testmove.player, move.player)
-        self.assertEqual(testmove.colour, move.colour)
-        self.assertEqual(testmove.board, move.board)
+        testmove.isPile = True
+        testmove.srcPos_x = 0
+        testmove.srcPos_y = 0
+        testmove.destPos_x = 0
+        testmove.destPos_y = 0
+        testmove.destOrientation = "Orientation.Flat"
+        testmove.pieces = 2
+        testmove.color = "Color.White"
+        testmove.first_turn = False
+        IO = proc.IOProcessor()
+        move = IO.inputToMove()
+        self.assertEqual(testmove.isPile, move.isPile)
+        self.assertEqual(testmove.srcPos_x, move.srcPos_x)
+        self.assertEqual(testmove.srcPos_y, move.srcPos_y)
+        self.assertEqual(testmove.destPos_x, move.destPos_x)
+        self.assertEqual(testmove.destPos_y, move.destPos_y)
+        self.assertEqual(testmove.destOrientation, move.destOrientation)
+        self.assertEqual(testmove.pieces, move.pieces)
+        self.assertEqual(testmove.color, move.color)
+        self.assertEqual(testmove.first_turn, move.first_turn)
 
 
 if __name__ == '__main__':

@@ -20,8 +20,13 @@ class IOProcessor:
     def inputToMove(self) -> Move:
         moveJson = self.readInput()
         move = Move()
-        move.moveNumber = moveJson['moveNo']
-        move.player = moveJson['player']
-        move.colour = moveJson['colour']
-        move.board = moveJson['board']
+        move.isPile = moveJson['src']['pile']
+        move.srcPos_x = moveJson['src']['pos_x']
+        move.srcPos_y = moveJson['src']['pos_y']
+        move.destPos_x = moveJson['des']['pos_x']
+        move.destPos_y = moveJson['des']['pos_y']
+        move.destOrientation = moveJson['des']['orientation']
+        move.pieces = moveJson['pieces']
+        move.color = moveJson['color']
+        move.first_turn = moveJson['first_turn']
         return move
