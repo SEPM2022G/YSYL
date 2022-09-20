@@ -1,25 +1,10 @@
 import numpy as np
-from Enums import Orientation, Color
+from ..Enums import Orientation, Color
+from ..Objects.Piece import Piece
 
-class Piece:
-    def __init__(self, orientation : Orientation, color : Color):
-        self.orientation = orientation
-        self.color = color
-   
-    def get_orientation(self):
-        return self.orientation
+# This class represents the 'StateManager' component in our component diagram
 
-    def get_color(self):
-        return self.color
-    
-    def __repr__(self):
-        return (self.color.name, self.orientation.name)
-
-    def __str__(self):
-        return (self.color.name, self.orientation.name)
-
-    
-class GameState:
+class StateManager:
     def __init__(self, 
                 white_pieces = 21, 
                 black_pieces = 21, 
@@ -29,9 +14,20 @@ class GameState:
         self.board = board
     
     def print_state(self):
+        print("White pieces: ", self.white_pieces)
+        print("Black pieces: ", self.black_pieces)
         print(self.board)
     
-    def update(self, move):
+    def get_state(self):
+        state = {
+            "white_pieces":self.white_pieces,
+            "black_pieces":self.black_pieces,
+            "board": self.board
+        }
+
+        return state
+
+    def update_state(self, move):
         src_x = move["src"]["pos_x"]
         src_y = move["src"]["pos_y"]
 
@@ -61,9 +57,9 @@ class GameState:
                 if des_z[i] == 0:
                     des_z[i] = Piece(ori, color)
                     if Color.WHITE.value == color.value:
-                        self.white_pieces = -1
+                        self.white_pieces -= 1
                     else:
-                        self.black_pieces = -1
+                        self.black_pieces -= 1
 
                     break
         else:
@@ -88,29 +84,6 @@ class GameState:
                         src_z[i-j-1] = 0
                     break
 
-move = {
-    "src": {
-        "pile": True,
-        "pos_x": 1,
-        "pos_y": 1,
-    },
-    "des": {
-        "pos_x": 0,
-        "pos_y": 0,
-        "orientation": Orientation.FLAT
-    },
-    "pieces": 1,
-    "color": Color.WHITE,
-    "first_turn": False
-}
+        return self.get_state()
 
 
-
-game = GameState()
-game.update(move)
-game.update(move)
-game.print_state()
-
-
-move["des"]["pos_x"] = 0
-move["des"]["pos_y"] = 0

@@ -7,7 +7,3 @@ class Orientation(Enum):
 class Color(Enum):
     WHITE = 0
     BLACK = 1
-
-    def isWhite(self, obj): {
-        self.WHITE.value == obj.value
-    }
