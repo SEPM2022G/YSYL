@@ -6,6 +6,7 @@ from ..Objects.Piece import Piece
 
 class StateManager:
     def __init__(self, 
+                difficulty_level = "easy",
                 white_pieces_pile = 21, 
                 black_pieces_pile = 21, 
                 board = np.zeros(shape=(5,5,42), dtype=object)):
