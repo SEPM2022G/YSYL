@@ -44,7 +44,7 @@ class Notifications(Widget):
         elif self.notification == Notification.VICTORY:
             self.set_notification(Notification.LOSS)
         else:
-            self.notification == Notification.NORMAL
+            self.set_notification(Notification.NORMAL)
 
     def set_notification(self, notification: Notification) -> None:
         self.notification = notification
