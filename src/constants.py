@@ -1,6 +1,14 @@
 from enum import Enum
 
 
+class Notification(Enum):
+    NORMAL = "Keep it up. You playing like a there is no tomorrow!"
+    ERROR = "A error occurred"
+    INVALID_MOVE = "The move is not valid, try again"
+    VICTORY = "You won :)"
+    LOSS = "You lost :("
+
+
 class Turn(Enum):
     WHITE = "White"
     BLACK = "Black"
