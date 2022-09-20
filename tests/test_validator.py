@@ -1,8 +1,10 @@
 from src.GameEngine.Components.Validator import Validator
-from src.GameEngine.Objects import Outcome, State
+from src.GameEngine.Objects.State import State
+from src.GameEngine.Objects.Outcome import Outcome
 v = Validator()
 
-def init():
+# Init
+def test_init():
     oldstate = State()
     newstate = State()
     result = v.check(oldstate, newstate)
