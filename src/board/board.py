@@ -29,5 +29,5 @@ class Board(GridView):
         self.move_piece(8, mp)
         self.move_piece(11, [Piece.WS, Piece.BL])
 
-    def move_piece(self, square: int, pieces: list[Piece]) -> None:
+    def move_piece(self, square: int, pieces: list(Piece)) -> None:
         self.squares[square].set_pieces(pieces)
