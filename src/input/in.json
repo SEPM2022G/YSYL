@@ -1,6 +1,15 @@
 {
-    "moveNo":5,
-    "player":1,
-    "colour":"white",
-    "board":"Test State"
+    "src": {
+        "pile": "True",
+        "pos_x": 1,
+        "pos_y": 1
+    },
+    "des": {
+        "pos_x": 0,
+        "pos_y": 0,
+        "orientation": "Orientation.FLAT"
+    },
+    "pieces": 1,
+    "color": "Color.WHITE",
+    "first_turn": "False"
 }

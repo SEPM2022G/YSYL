@@ -1,4 +1,6 @@
+import sys
 import unittest
+sys.path.append("..")
 import src.GameEngine.Components.IOProcessor as proc
 from src.GameEngine.Objects.Move import Move
 
