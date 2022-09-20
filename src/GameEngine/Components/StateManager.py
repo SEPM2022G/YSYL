@@ -6,22 +6,22 @@ from ..Objects.Piece import Piece
 
 class StateManager:
     def __init__(self, 
-                white_pieces = 21, 
-                black_pieces = 21, 
+                white_pieces_pile = 21, 
+                black_pieces_pile = 21, 
                 board = np.zeros(shape=(5,5,42), dtype=object)):
-        self.white_pieces = white_pieces
-        self.black_pieces = black_pieces
+        self.white_pieces_pile = white_pieces_pile
+        self.black_pieces_pile = black_pieces_pile
         self.board = board
     
     def print_state(self):
-        print("White pieces: ", self.white_pieces)
-        print("Black pieces: ", self.black_pieces)
+        print("White pieces in pile: ", self.white_pieces_pile)
+        print("Black pieces in pile: ", self.black_pieces_pile)
         print(self.board)
     
     def get_state(self):
         state = {
-            "white_pieces":self.white_pieces,
-            "black_pieces":self.black_pieces,
+            "white_pieces_pile":self.white_pieces_pile,
+            "black_pieces_pile":self.black_pieces_pile,
             "board": self.board
         }
 
@@ -42,10 +42,10 @@ class StateManager:
         if move["first_turn"]:
             if Color.WHITE.value == color.value: 
                 opponent_color = Color.BLACK
-                self.black_pieces -= 1 
+                self.black_pieces_pile -= 1 
             else:
                 opponent_color = Color.WHITE
-                self.white_pieces -= 1
+                self.white_pieces_pile -= 1
 
             for i in range(0, des_z.size):
                 if des_z[i] == 0:
@@ -57,9 +57,9 @@ class StateManager:
                 if des_z[i] == 0:
                     des_z[i] = Piece(ori, color)
                     if Color.WHITE.value == color.value:
-                        self.white_pieces -= 1
+                        self.white_pieces_pile -= 1
                     else:
-                        self.black_pieces -= 1
+                        self.black_pieces_pile -= 1
 
                     break
         else:
@@ -72,7 +72,7 @@ class StateManager:
                         #All the pieces beneath the one on the top are flat
                         des_z[i+j] = Piece(Orientation.FLAT, color)
                     
-                    des_z[i+pieces] = Piece(ori, color)
+                    des_z[i+pieces-1] = Piece(ori, color)
                     break
             
             ###Remove where the pieces were 
