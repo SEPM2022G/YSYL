@@ -18,5 +18,10 @@ class IOProcessor:
         print("write to file")
 
     def inputToMove(self) -> Move:
-        print("convert file data to Move object")
-        return Move()
+        moveJson = self.readInput()
+        move = Move()
+        move.moveNumber = moveJson['moveNo']
+        move.player = moveJson['player']
+        move.colour = moveJson['colour']
+        move.board = moveJson['board']
+        return move
