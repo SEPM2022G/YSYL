@@ -1,21 +1,11 @@
 import numpy as np
 from Enums import Orientation, Color
 
-class Position: 
-    def __init__(self, x : int, y : int, z : int):
-        self.x = x
-        self.y = y
-        self.z = z
-
 class Piece:
-    def __init__(self, position : Position , orientation : Orientation, color : Color):
-        self.position = position
+    def __init__(self, orientation : Orientation, color : Color):
         self.orientation = orientation
         self.color = color
-    
-    def get_position(self):
-        return self.position
-    
+   
     def get_orientation(self):
         return self.orientation
 
@@ -23,19 +13,19 @@ class Piece:
         return self.color
     
     def __repr__(self):
-        return self.color.name
+        return (self.color.name, self.orientation.name)
 
     def __str__(self):
-        return self.color.name
+        return (self.color.name, self.orientation.name)
 
     
 class GameState:
     def __init__(self, 
-                piecesPlayer1 = 21, 
-                piecesPlayer2 = 21, 
+                white_pieces = 21, 
+                black_pieces = 21, 
                 board = np.zeros(shape=(5,5,42), dtype=object)):
-        self.piecesPlayer1 = piecesPlayer1
-        self.piecesPlayer2 = piecesPlayer2
+        self.white_pieces = white_pieces
+        self.black_pieces = black_pieces
         self.board = board
     
     def print_state(self):
@@ -56,18 +46,25 @@ class GameState:
         if move["first_turn"]:
             if Color.WHITE.value == color.value: 
                 opponent_color = Color.BLACK
+                self.black_pieces -= 1 
             else:
                 opponent_color = Color.WHITE
+                self.white_pieces -= 1
 
             for i in range(0, des_z.size):
                 if des_z[i] == 0:
-                    des_z[i] = Piece(Position(des_x, des_y, i), ori, opponent_color)
+                    des_z[i] = Piece(ori, opponent_color)
                     break
 
         elif move["src"]["pile"]:
             for i in range(0, des_z.size):
                 if des_z[i] == 0:
-                    des_z[i] = Piece(Position(des_x, des_y, i), ori, color)
+                    des_z[i] = Piece(ori, color)
+                    if Color.WHITE.value == color.value:
+                        self.white_pieces = -1
+                    else:
+                        self.black_pieces = -1
+
                     break
         else:
             ###Add pieces to new destination
@@ -77,9 +74,9 @@ class GameState:
                 if des_z[i] == 0:
                     for j in range(0, pieces-1):
                         #All the pieces beneath the one on the top are flat
-                        des_z[j+i] = Piece(Position(des_x, des_y, j+i), Orientation.FLAT, color)
+                        des_z[i+j] = Piece(Orientation.FLAT, color)
                     
-                    des_z[j+pieces] = Piece(Position(des_x, des_y, j+i), ori, color)
+                    des_z[i+pieces] = Piece(ori, color)
                     break
             
             ###Remove where the pieces were 
