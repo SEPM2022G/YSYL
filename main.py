@@ -1,7 +1,6 @@
 from textual.app import App
 from src.board.board import Board
 from src.info.info import Info
-from src.constants import Turn
 
 
 class PrettyGameApp(App):
@@ -19,7 +18,7 @@ class PrettyGameApp(App):
 
         self.info.tournament_widget.set_score((1, 1))
         self.info.tournament_widget.set_n_games(1)
-        self.info.player_widget.turn_white()
+        self.info.player_widget.next_turn()
         self.info.player_widget.set_n_white_pieces(16)
         self.info.player_widget.set_n_black_pieces(15)
 

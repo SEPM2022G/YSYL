@@ -35,6 +35,12 @@ class Player(Widget):
     def turn_white(self) -> None:
         self.set_turn(Turn.WHITE)
 
+    def next_turn(self) -> None:
+        if self.turn == Turn.WHITE:
+            self.turn_black()
+        elif self.turn == Turn.BLACK:
+            self.turn_white()
+
     def set_n_black_pieces(self, n_black_pieces: int) -> None:
         self.n_black_pieces = n_black_pieces
 
