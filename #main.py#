@@ -1,7 +1,6 @@
 from textual.app import App
 from src.board.board import Board
 from src.info.info import Info
-from src.constants import Turn
 
 
 class PrettyGameApp(App):

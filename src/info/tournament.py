@@ -11,7 +11,6 @@ class Tournament(Widget):
     def __init__(self) -> None:
         super().__init__()
         self.score
-        self.n_games = ""
         self.set_score((0, 0))
 
     def render(self) -> Markdown:
