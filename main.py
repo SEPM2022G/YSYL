@@ -18,7 +18,7 @@ class PrettyGameApp(App):
 
         self.info.tournament_widget.set_score((1, 1))
         self.info.tournament_widget.set_n_games(1)
-        self.info.player_widget.set_turn("White")
+        self.info.player_widget.next_turn()
         self.info.player_widget.set_n_white_pieces(16)
         self.info.player_widget.set_n_black_pieces(15)
 
