@@ -1,2 +1,3 @@
 textual.log
 *.~undo-tree~
+__pycache__/
