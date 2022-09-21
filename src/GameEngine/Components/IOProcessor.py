@@ -2,8 +2,6 @@
 
 import json
 
-from GameEngine.Objects.Move import Move
-
 class IOProcessor:
     def __init__(self) -> None:
         pass
@@ -17,6 +15,7 @@ class IOProcessor:
     def writeOutput(self, path="output/out.json"):
         print("write to file")
 
-    def inputToMove(self) -> Move:
-        print("convert file data to Move object")
-        return Move()
+    #def inputToMove(self) -> Move:
+    #    print("convert file data to Move object")
+    #    return Move()
+
