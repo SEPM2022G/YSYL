@@ -7,7 +7,7 @@ class IOProcessor:
     def __init__(self) -> None:
         pass
 
-    def readInput(self, path="input/in.json") -> any:
+    def readInput(self, path="../input/in.json") -> any:
         with open(path, encoding = 'utf-8') as f:
             fileData = json.load(f)
 
