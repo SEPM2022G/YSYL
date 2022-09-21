@@ -26,20 +26,21 @@ class Player(Widget):
         MARKDOWN += f"{Piece.WS.value} {self.n_white_pieces} white pieces"
         return Markdown(MARKDOWN)
 
-    def set_turn(self, turn: Turn) -> None:
+    def set_turn(self, turn: Turn) -> Turn:
         self.turn = turn
+        return turn
 
-    def turn_black(self) -> None:
-        self.set_turn(Turn.BLACK)
+    def turn_black(self) -> Turn:
+        return self.set_turn(Turn.BLACK)
 
-    def turn_white(self) -> None:
-        self.set_turn(Turn.WHITE)
+    def turn_white(self) -> Turn:
+        return self.set_turn(Turn.WHITE)
 
-    def next_turn(self) -> None:
+    def next_turn(self) -> Turn:
         if self.turn == Turn.WHITE:
-            self.turn_black()
+            return self.turn_black()
         elif self.turn == Turn.BLACK:
-            self.turn_white()
+            return self.turn_white()
 
     def set_n_black_pieces(self, n_black_pieces: int) -> None:
         self.n_black_pieces = n_black_pieces

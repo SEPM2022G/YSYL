@@ -12,7 +12,6 @@ class Square(Widget):
 
     def __init__(self, pieces: list[Piece], x: int, y: int, parent, move_piece) -> None:
         super().__init__()
-        #self.p = parent
         self.move_piece = move_piece
         self.x = x
         self.y = y
