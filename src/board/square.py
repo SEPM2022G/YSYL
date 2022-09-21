@@ -66,7 +66,7 @@ class Square(Widget):
         #self.add_piece(Piece.WL)
         # self.set_pieces([Piece.WL])
 
-    def get_pieces(self) -> list[Piece]:
+    def get_pieces(self) -> list(Piece):
         return self.pieces
 
     def add_piece(self, piece: Piece) -> None:
@@ -78,7 +78,7 @@ class Square(Widget):
         if (len(self.pieces) != 0):
             return self.pieces.pop()  # the last piece is the bottom piece
 
-    def set_pieces(self, pieces: list[Piece]) -> None:
+    def set_pieces(self, pieces: list(Piece)) -> None:
         self.pieces = pieces
 
     def on_enter(self) -> None:

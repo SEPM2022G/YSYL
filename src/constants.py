@@ -1,6 +1,11 @@
 from enum import Enum
 
 
+class Turn(Enum):
+    WHITE = "White"
+    BLACK = "Black"
+
+
 class Piece(Enum):
     BS = "⯊"  # BLACK_STANDING
     WS = "◠"  # WHITE_STANDING
