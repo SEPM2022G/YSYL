@@ -18,3 +18,4 @@ class IOProcessor:
     #def inputToMove(self) -> Move:
     #    print("convert file data to Move object")
     #    return Move()
+

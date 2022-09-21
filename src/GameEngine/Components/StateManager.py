@@ -87,4 +87,3 @@ class StateManager:
 
         return self.get_state()
 
-
