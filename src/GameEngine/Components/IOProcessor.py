@@ -2,8 +2,6 @@
 
 import json
 
-from GameEngine.Objects.Move import Move
-
 class IOProcessor:
     def __init__(self) -> None:
         pass
@@ -30,3 +28,4 @@ class IOProcessor:
         move.color = moveJson['color']
         move.first_turn = moveJson['first_turn']
         return move
+
