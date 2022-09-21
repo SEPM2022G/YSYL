@@ -1,12 +1,12 @@
 import sys
 import unittest
-from src.GameEngine.Components.IOProcessor import IOProcessor as proc
+from src.GameEngine.Components.IOProcessor import IOProcessor
 
 
 class TestIO(unittest.TestCase):
 
     def testinputToMove(self):
-        IO = proc.IOProcessor()
+        IO = IOProcessor()
         testmove = IO.readInput()
         testmove.isPile = True
         testmove.srcPos_x = 0
