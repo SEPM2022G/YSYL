@@ -1,6 +1,7 @@
 # This class represents the 'IOProcessor' component in our component diagram
 
 import json
+from GameEngine.Objects.Move import Move
 
 class IOProcessor:
     def __init__(self) -> None:

@@ -8,7 +8,8 @@ from src.GameEngine.Objects import Move
 class TestIO(unittest.TestCase):
 
     def testinputToMove(self):
-        testmove = Move()
+        IO = proc.IOProcessor()
+        testmove = IO.readInput()
         testmove.isPile = True
         testmove.srcPos_x = 0
         testmove.srcPos_y = 0
@@ -17,8 +18,7 @@ class TestIO(unittest.TestCase):
         testmove.destOrientation = "Orientation.Flat"
         testmove.pieces = 2
         testmove.color = "Color.White"
-        testmove.first_turn = False
-        IO = proc.IOProcessor()
+        testmove.first_turn = False      
         move = IO.inputToMove()
         self.assertEqual(testmove.isPile, move.isPile)
         self.assertEqual(testmove.srcPos_x, move.srcPos_x)
