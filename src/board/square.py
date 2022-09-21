@@ -10,8 +10,12 @@ class Square(Widget):
     mouse_over: Reactive[RenderableType] = Reactive(False)
     pieces: Reactive[RenderableType] = Reactive([])
 
-    def __init__(self, pieces: list(Piece)) -> None:
+    def __init__(self, pieces: list[Piece], x: int, y: int, parent, move_piece) -> None:
         super().__init__()
+        #self.p = parent
+        self.move_piece = move_piece
+        self.x = x
+        self.y = y
         self.pieces = pieces  # The stack of pieces per square
 
     def render(self) -> Panel:
@@ -19,6 +23,12 @@ class Square(Widget):
                      style=("on green" if self.mouse_over else ""))
 
     def render_pieces(self) -> str:
+        buf = ""
+
+        for piece in self.pieces:
+            buf += piece.value + "\n"
+
+        return buf
         # This is a ugly solution and requres a constant row of 7.
         # This can be improved but will work for now. I wrote this
         # late and it took me hours to get it to work. Be careful!
@@ -46,20 +56,27 @@ class Square(Widget):
 
             pieces_str += "\n"  # New row
 
-        return pieces_str
+        #return pieces_str
 
     def on_click(self) -> None:
         # TODO: add piece depending on option and color
-        self.set_pieces([Piece.WL])
+        #self.parent.set_click(self.x, self.y)
+        self.move_piece(self.x, self.y)
+
+        #self.add_piece(Piece.WL)
+        # self.set_pieces([Piece.WL])
 
     def get_pieces(self) -> list(Piece):
         return self.pieces
 
     def add_piece(self, piece: Piece) -> None:
-        self.pieces.append(piece)
+        _pieces = self.pieces.copy()
+        _pieces.append(piece)
+        self.set_pieces(_pieces)
 
     def remove_piece(self) -> Piece:
-        return self.pieces[-1]  # the last piece is the bottom piece
+        if (len(self.pieces) != 0):
+            return self.pieces.pop()  # the last piece is the bottom piece
 
     def set_pieces(self, pieces: list(Piece)) -> None:
         self.pieces = pieces
