@@ -1,7 +1,6 @@
 import sys
 import unittest
-sys.path.append("..")
-from GameEngine.Components.IOProcessor import IOProcessor as proc
+from src.GameEngine.Components.IOProcessor import IOProcessor as proc
 
 
 class TestIO(unittest.TestCase):
