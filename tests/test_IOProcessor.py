@@ -1,8 +1,8 @@
 import sys
 import unittest
 sys.path.append("..")
-from src.GameEngine.Components import IOProcessor as proc
-from src.GameEngine.Objects import Move
+from GameEngine.Components.IOProcessor import IOProcessor as proc
+from GameEngine.Objects.Move import Move
 
 
 class TestIO(unittest.TestCase):
