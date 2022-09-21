@@ -1,4 +1,4 @@
-from ..Enums import Orientation, Color
+from src.GameEngine.Objects.Enums import Orientation, Color
 
 class Piece:
     def __init__(self, orientation : Orientation, color : Color):

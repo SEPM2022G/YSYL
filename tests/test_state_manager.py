@@ -1,7 +1,5 @@
-import sys
-sys.path.append("..") # Adds higher directory to python modules path.
-from src.GameEngine.Components import StateManager as SM
-from src.GameEngine.Enums import Orientation, Color
+from src.GameEngine.Components.StateManager import StateManager
+from src.GameEngine.Objects.Enums import Orientation, Color
 
 
 move = {
@@ -21,7 +19,7 @@ move = {
 }
 
 
-sm = SM.StateManager()
+sm = StateManager()
 
 
 def test_1_init_condition():
@@ -75,5 +73,4 @@ def test_5_move_stack():
     assert str(state["board"][src_x][src_y][0]) == "(WHITE, FLAT)"
     assert state["board"][src_x][src_y][1] == 0
     assert state["board"][src_x][src_y][2] == 0
-
 

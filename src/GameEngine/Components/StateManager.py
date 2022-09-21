@@ -1,6 +1,6 @@
 import numpy as np
-from ..Enums import Orientation, Color
-from ..Objects.Piece import Piece
+from src.GameEngine.Objects.Enums import Orientation, Color
+from src.GameEngine.Objects.Piece import Piece
 
 # This class represents the 'StateManager' component in our component diagram
 
