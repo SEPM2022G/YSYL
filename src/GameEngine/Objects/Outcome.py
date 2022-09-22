@@ -9,3 +9,4 @@ class Outcome(Enum):
     VALID = 1
     WIN_WHITE = 2
     WIN_BLACK = 3
+    CONT = 4
