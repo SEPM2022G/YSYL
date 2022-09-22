@@ -1,43 +1,112 @@
 import numpy as np
 from src.GameEngine.Objects.Enums import Orientation, Color
 from src.GameEngine.Objects.Outcome import Outcome
-outcome = [ Outcome.WIN_WHITE, Outcome.WIN_BLACK ]
+outcome = [Outcome.WIN_WHITE, Outcome.WIN_BLACK]
+
 
 class Validator:
     '''
     Validate moves and checks for win condition.
     '''
 
-    def check(self, move, state) -> Outcome:
+    def check(self, move, oldstate, newstate) -> Outcome:
+        newboard = newstate["board"]
+        oldboard = oldstate["board"]
+
+        des = move["des"]
+        src = move["src"]
+
+        win_state = self._win_check(newboard)
+        if win_state != Outcome.CONT:
+            return win_state
+
+        if move["pieces"] < 1:
+            return Outcome.INVALID
+
+        # First round
+        if move["first_turn"] == True:
+            if src["pile"]:
+                return Outcome.INVALID
+            if move["pieces"] != 1:
+                return Outcome.INVALID
+
+        # des
+        if des["pos_x"] < 1 or des["pos_x"] > 5:
+            return Outcome.INVALID
+
+        if des["pos_y"] < 1 or des["pos_y"] > 5:
+            return Outcome.INVALID
+
+        des_elem = self._find_top(oldboard[des["pos_x"]][des["pos_y"]])
+        if des_elem != -1 and des_elem.get_color() != move["color"] and not move["first_turn"]:
+            return Outcome.INVALID
+
+        if des_elem != -1 and des_elem.get_orientation() == Orientation.STANDING:
+            print(des_elem)
+            return Outcome.INVALID
+
+        # src
+        if (src["pos_x"] < 1 or src["pos_x"] > 5) and not src["pile"]:
+            return Outcome.INVALID
+
+        if (src["pos_y"] < 1 or src["pos_y"] > 5) and not src["pile"]:
+            return Outcome.INVALID
+
+        src_elem = self._find_top(oldboard[src["pos_x"]][src["pos_y"]])
+        if not src["pile"] and src_elem.get_color() != move["color"]:
+            return Outcome.INVALID
+
+        if src["pile"] == True and not move["first_turn"]:
+            if move["color"] == Color.WHITE and oldstate["white_pieces_pile"] - move["pieces"] < 0:
+                return Outcome.INVALID
+            if move["color"] == Color.BLACK and oldstate["black_pieces_pile"] - move["pieces"] < 0:
+                return Outcome.INVALID
+
+        # Check that n pieces are correct color
+        src_stack = oldboard[src["pos_x"]][src["pos_y"]]
+        src_stack = src_stack[src_stack != 0]
+
+        for i, elem in enumerate(src_stack[-move["pieces"]:]):
+            src_stack[i] = elem.get_color() == move["color"]
+
+        if not src["pile"] and not np.all(src_stack):
+            return Outcome.INVALID
+
+        # Prevents idle move
+        if src["pos_y"] == des["pos_y"] and src["pos_x"] == des["pos_x"] and not src["pile"]:
+            return Outcome.INVALID
+
         return Outcome.VALID
 
     def _win_check(self, board) -> Outcome:
         '''
         Checks for a win
         '''
-        for y in range(0,5):
+        for y in range(0, 5):
 
             has_turned = False
-            for x in range(1,5):
+            for x in range(1, 5):
                 next_elem = self._find_top(board[x][y])
                 prev_elem = self._find_top(board[x - 1][y])
 
                 # Checks for valid turning paths
-                if prev_elem != -1 and next_elem != prev_elem and has_turned == False:
+                if prev_elem != -1 and next_elem != prev_elem and not has_turned:
                     has_turned = True
                     path_check = Outcome.CONT
 
                     if y > 0:
                         prev_down = self._find_top(board[x-1][y-1])
-                        if prev_elem == prev_down: path_check = self._check_path(x, y-1, board)
-                            
+                        if prev_elem == prev_down:
+                            path_check = self._check_path(x, y-1, board)
+
                     if y < 4:
                         prev_top = self._find_top(board[x-1][y+1])
-                        if prev_elem == prev_top: path_check = self._check_path(x, y+1, board)
+                        if prev_elem == prev_top:
+                            path_check = self._check_path(x, y+1, board)
 
                     if path_check != Outcome.CONT:
                         return path_check
-                    
+
                 if next_elem != prev_elem or prev_elem == -1:
                     break
             else:
@@ -65,8 +134,6 @@ class Validator:
         if arr[0] == 0:
             return -1
         for i, elem in enumerate(arr):
-            if elem == 0: 
+            if elem == 0:
                 return arr[i-1]
         return -1
-
-
