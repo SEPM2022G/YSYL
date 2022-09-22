@@ -7,5 +7,5 @@ class Outcome(Enum):
     '''
     INVALID = 0
     VALID = 1
-    WIN_PLAYER = 2
-    WIN_AI = 3
+    WIN_WHITE = 2
+    WIN_BLACK = 3
