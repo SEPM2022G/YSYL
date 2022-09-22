@@ -1,18 +1,16 @@
 from textual.views import GridView
 from src.board.square import Square
-from src.constants import Piece
+from src.constants import Piece, Turn
 
 DIM = 5
-BLACK = True
-WHITE = False
 
 class Board(GridView):
-    def __init__(self) -> None:
+    def __init__(self, update_turn) -> None:
         super().__init__()
-        self.turn = BLACK # TODO: FIX
         self.squares = [[Square([], x, y, self, self.move_piece) for x in range(DIM)] for y in range(DIM)]
         self.to = []
         self.start = []
+        self.update_turn = update_turn
 
         #self.squares = []  # All the pices are located here
         #for i in range(25):  # A 5x5 gives 25 squares
@@ -53,12 +51,15 @@ class Board(GridView):
             self.to = self.start = []
 
     def move_piece(self, x_end: int, y_end: int, x_start = -1, y_start = -1) -> int:
-        piece = (Piece.WL, Piece.BL)[self.turn]
+        turn = self.update_turn()
+        piece = (Piece.WL, Piece.BL)[turn == Turn.BLACK]
+
         if (True):#(x_start == -1) and (y_end == -1)):
             self.squares[y_end][x_end].add_piece(piece)
         else:
             piece = self.squares[x_start][y_start].remove_piece()
-            self.squares[x_end][y_end].add_piece(Piece.WL)
+            self.squares[x_end][y_end].add_piece(piece)
+
         return 0
 
     #def move_piece(self, x: int, y: int, pieces: Piece) -> None:

@@ -12,7 +12,6 @@ class Square(Widget):
 
     def __init__(self, pieces: list[Piece], x: int, y: int, parent, move_piece) -> None:
         super().__init__()
-        #self.p = parent
         self.move_piece = move_piece
         self.x = x
         self.y = y
@@ -23,12 +22,6 @@ class Square(Widget):
                      style=("on green" if self.mouse_over else ""))
 
     def render_pieces(self) -> str:
-        buf = ""
-
-        for piece in self.pieces:
-            buf += piece.value + "\n"
-
-        return buf
         # This is a ugly solution and requres a constant row of 7.
         # This can be improved but will work for now. I wrote this
         # late and it took me hours to get it to work. Be careful!
@@ -40,12 +33,13 @@ class Square(Widget):
 
         # first insert
         for i in range(len(self.pieces)):
-            if c >= 0:
-                pieces_array[r].append("")  # new column
 
             if r == len(pieces_array)-1:
                 c += 1  # populate new column new
                 r = 0  # new column starts with row 0
+
+            if c >= 0:
+                pieces_array[r].append("")  # new column
 
             pieces_array[r][c] = self.pieces[i].value  # a string
             r += 1  # populate next element in pieces_array
@@ -56,7 +50,7 @@ class Square(Widget):
 
             pieces_str += "\n"  # New row
 
-        #return pieces_str
+        return pieces_str
 
     def on_click(self) -> None:
         # TODO: add piece depending on option and color
@@ -71,12 +65,12 @@ class Square(Widget):
 
     def add_piece(self, piece: Piece) -> None:
         _pieces = self.pieces.copy()
-        _pieces.append(piece)
+        _pieces.insert(0, piece)
         self.set_pieces(_pieces)
 
     def remove_piece(self) -> Piece:
         if (len(self.pieces) != 0):
-            return self.pieces.pop()  # the last piece is the bottom piece
+            return self.pieces.pop(0)  # the last piece is the bottom piece
 
     def set_pieces(self, pieces: list(Piece)) -> None:
         self.pieces = pieces

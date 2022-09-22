@@ -6,13 +6,12 @@ from src.info.info import Info
 class PrettyGameApp(App):
     async def on_load(self) -> None:
         """Sent before going in to application mode."""
-
         # Bind our basic keys
         await self.bind("q", "quit", "Quit")
 
     async def on_mount(self) -> None:
-        self.board = Board()
         self.info = Info()
+        self.board = Board(self.info.player_widget.next_turn)
         await self.view.dock(self.board, edge="left", size=100)
         await self.view.dock(self.info, edge="top")
 
