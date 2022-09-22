@@ -17,16 +17,29 @@ class Validator:
         outcome = [ Outcome.WIN_WHITE, Outcome.WIN_BLACK ]
         for y in range(0,5):
 
-            cont = True
+            hasTurned = False
             for x in range(1,5):
                 next_elem = self._find_top(board[x][y])
                 prev_elem = self._find_top(board[x - 1][y])
 
-                if next_elem == -1 or prev_elem == -1:
-                    break
-                if next_elem.get_color() != prev_elem.get_color():
-                    break
-                if next_elem.get_orientation() != prev_elem.get_orientation():
+                if prev_elem != -1 and next_elem != prev_elem and hasTurned == False:
+                    hasTurned = True
+
+                    if y > 0:
+                        elem_down = self._find_top(board[x][y-1])
+                        prev_down = self._find_top(board[x-1][y-1])
+                        if elem_down == prev_down and prev_elem == elem_down:
+                            y = y - 1 
+                            continue
+
+                    if y < 4:
+                        elem_top = self._find_top(board[x][y+1])
+                        prev_top = self._find_top(board[x-1][y+1])
+                        if elem_top == prev_top and prev_elem == elem_top:
+                            y = y + 1
+                            continue
+                
+                if next_elem != prev_elem or prev_elem == -1:
                     break
             else:
                 return outcome[prev_elem.get_color().value]
