@@ -9,9 +9,11 @@ class Tournament(Widget):
     score: Reactive[RenderableType] = Reactive("Black 0/ White 0")
 
     def __init__(self) -> None:
+        """
+        Set the tournament score to 0 for black and 0 for white
+        """
         super().__init__()
-        self.score
-        self.set_score((0, 0))
+        self.reset()
 
     def render(self) -> Markdown:
         MARKDOWN = "## Tournament score\n"
@@ -24,3 +26,6 @@ class Tournament(Widget):
 
     def set_n_games(self, n_games: int) -> None:
         self.n_games = n_games
+
+    def reset(self) -> None:
+        self.set_score((0, 0))

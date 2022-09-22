@@ -1,5 +1,7 @@
 from enum import Enum
 
+DIM = 5  # The dimension of the board, i.e. 5x5
+
 
 class Notification(Enum):
     NORMAL = "Keep it up. You playing like a there is no tomorrow!"
@@ -22,6 +24,7 @@ class Piece(Enum):
 
 
 class SelectedOption(Enum):
+    # TODO: should be capital letters
     lying = "Layout lying piece"
     standing = "Layout standing piece"
     stack = "Move stack"

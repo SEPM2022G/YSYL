@@ -11,8 +11,11 @@ class Notifications(Widget):
     notification: Reactive[RenderableType] = Reactive(Notification.NORMAL)
 
     def __init__(self) -> None:
+        """
+        Set notification to Notification.NORMAL
+        """
         super().__init__()
-        self.notification = Notification.NORMAL  # Initaly white has 21 pieces
+        self.reset()
 
     def render(self) -> Panel:
         if self.notification == Notification.ERROR:
@@ -48,3 +51,6 @@ class Notifications(Widget):
 
     def set_notification(self, notification: Notification) -> None:
         self.notification = notification
+
+    def reset(self) -> None:
+        self.notification = Notification.NORMAL

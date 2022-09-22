@@ -12,6 +12,9 @@ class Info(GridView):
     """ This is the right view showing information about the game """
 
     def __init__(self) -> None:
+        """
+        Initialize all the widgets on the right side.
+        """
         super().__init__()
         self.title_widget = Title()
         self.tournament_widget = Tournament()
@@ -65,3 +68,8 @@ class Info(GridView):
             self.option_stack_widget.set_selected(True)
         else:  # sanity check
             print(f"No such option {option}")
+
+    def reset(self) -> None:
+        self.tournament_widget.reset()
+        self.player_widget.reset()
+        self.notification_widget.reset()

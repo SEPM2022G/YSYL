@@ -15,11 +15,17 @@ class PrettyGameApp(App):
         await self.view.dock(self.board, edge="left", size=100)
         await self.view.dock(self.info, edge="top")
 
+        # TODO: remove just a examples
         self.info.tournament_widget.set_score((1, 1))
         self.info.tournament_widget.set_n_games(1)
         self.info.player_widget.next_turn()
         self.info.player_widget.set_n_white_pieces(16)
         self.info.player_widget.set_n_black_pieces(15)
+        self.reset()
+
+    def reset(self):
+        self.info.reset()
+        self.board.reset()
 
 
 PrettyGameApp.run(log="textual.log")
