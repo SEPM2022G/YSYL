@@ -29,7 +29,7 @@ def win_straight(color, orientation, outcome):
         boards[n] = np.zeros(shape=(5,5,42), dtype=object) 
         for x in range(0,5):
             boards[n][x][n][0] = Piece(orientation, color)
-        result = v.win_check(boards[n])
+        result = v._win_check(boards[n])
         assert( result == outcome )
 
 # Tests turns
@@ -70,7 +70,7 @@ def cont_turns(color, orientation):
     boards.append(board3)
 
     for board in boards:
-        result = v.win_check(board)
+        result = v._win_check(board)
         assert( result == Outcome.CONT )
 
 def win_turns(color, orientation, outcome):
@@ -104,7 +104,7 @@ def win_turns(color, orientation, outcome):
     boards.append(board3)
 
     for board in boards:
-        result = v.win_check(board)
+        result = v._win_check(board)
         assert( result == outcome )
 
 def test_win_straight_white_standing():
@@ -154,7 +154,7 @@ def test_cont_mixed_1():
     board[3][0][0] = Piece(Orientation.FLAT, Color.BLACK)
     board[4][0][0] = Piece(Orientation.FLAT, Color.BLACK)
 
-    result = v.win_check(board)
+    result = v._win_check(board)
     assert( result == outcome )
 
 def test_cont_mixed_2():
@@ -168,7 +168,7 @@ def test_cont_mixed_2():
     board[3][0][0] = Piece(Orientation.FLAT, Color.BLACK)
     board[4][0][0] = Piece(Orientation.FLAT, Color.BLACK)
 
-    result = v.win_check(board)
+    result = v._win_check(board)
     assert( result == outcome )
 
 def test_cont_mixed_3():
@@ -180,7 +180,7 @@ def test_cont_mixed_3():
     board[2][0][0] = Piece(Orientation.FLAT, Color.BLACK)
     board[3][0][0] = Piece(Orientation.STANDING, Color.BLACK)
     board[4][0][0] = Piece(Orientation.FLAT, Color.BLACK)
-    result = v.win_check(board)
+    result = v._win_check(board)
     assert( result == outcome )
         
 def test_cont_diagonal_1():
@@ -192,7 +192,7 @@ def test_cont_diagonal_1():
     board[2][2][0] = Piece(Orientation.FLAT, Color.BLACK)
     board[3][3][0] = Piece(Orientation.FLAT, Color.BLACK)
     board[4][4][0] = Piece(Orientation.FLAT, Color.BLACK)
-    result = v.win_check(board)
+    result = v._win_check(board)
     assert( result == outcome )
 
 def test_win_mixed_1():
@@ -208,7 +208,7 @@ def test_win_mixed_1():
     board[3][3][1] = Piece(Orientation.FLAT, Color.BLACK)
     board[4][3][0] = Piece(Orientation.FLAT, Color.BLACK)
 
-    result = v.win_check(board)
+    result = v._win_check(board)
     assert( result == outcome )
 
 def test_win_mixed_2():
@@ -225,5 +225,39 @@ def test_win_mixed_2():
     board[3][3][0] = Piece(Orientation.FLAT, Color.BLACK)
     board[4][3][0] = Piece(Orientation.FLAT, Color.BLACK)
 
-    result = v.win_check(board)
+    result = v._win_check(board)
+    assert( result == outcome )
+
+def test_win_multiple_turns_1():
+    outcome = Outcome.WIN_BLACK
+    board = np.zeros(shape=(5,5,42), dtype=object) 
+
+    board[0][2][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[1][2][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[1][3][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[2][3][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[3][3][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[1][1][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[2][1][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[3][1][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[4][1][0] = Piece(Orientation.FLAT, Color.BLACK)
+
+    result = v._win_check(board)
+    assert( result == outcome )
+
+def test_win_multiple_turns_2():
+    outcome = Outcome.WIN_BLACK
+    board = np.zeros(shape=(5,5,42), dtype=object) 
+
+    board[0][2][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[1][2][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[1][3][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[2][3][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[3][3][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[4][3][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[1][1][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[2][1][0] = Piece(Orientation.FLAT, Color.BLACK)
+    board[3][1][0] = Piece(Orientation.FLAT, Color.BLACK)
+
+    result = v._win_check(board)
     assert( result == outcome )
