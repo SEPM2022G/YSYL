@@ -35,7 +35,7 @@ def test_out_of_bounds():
     move1 = {
         "src": {
             "pile": False,
-            "pos_x": 0,
+            "pos_x": 6,
             "pos_y": 0,
         },
         "des": {
@@ -88,13 +88,13 @@ def test_out_of_bounds():
 
     move4 = {
         "src": {
-            "pile": False,
+            "pile": True,
             "pos_x": 1,
             "pos_y": 1,
         },
         "des": {
             "pos_x": 0,
-            "pos_y": 0,
+            "pos_y": 6,
             "orientation": Orientation.FLAT
         },
         "pieces": 1,
@@ -346,6 +346,28 @@ def test_idle_move():
     }
     result = v.check(move1, state, state)
     assert (result == Outcome.INVALID)
+
+def test_change_in_place_move():
+    state = {"white_pieces_pile": 21, "black_pieces_pile": 21,
+             "board": np.zeros(shape=(5, 5, 42), dtype=object)}
+    state["board"][1][1][0] = Piece(Orientation.FLAT, Color.BLACK)
+    move1 = {
+        "src": {
+            "pile": False,
+            "pos_x": 1,
+            "pos_y": 1,
+        },
+        "des": {
+            "pos_x": 1,
+            "pos_y": 1,
+            "orientation": Orientation.STANDING
+        },
+        "pieces": 1,
+        "color": Color.BLACK,
+        "first_turn": False
+    }
+    result = v.check(move1, state, state)
+    assert (result == Outcome.VALID)
 
 
 def test_find():

@@ -31,10 +31,10 @@ class Validator:
                 return Outcome.INVALID
 
         # des
-        if des["pos_x"] < 1 or des["pos_x"] > 5:
+        if des["pos_x"] < 0 or des["pos_x"] > 4:
             return Outcome.INVALID
 
-        if des["pos_y"] < 1 or des["pos_y"] > 5:
+        if des["pos_y"] < 0 or des["pos_y"] > 4:
             return Outcome.INVALID
 
         des_elem = self._find_top(oldboard[des["pos_x"]][des["pos_y"]])
@@ -46,14 +46,14 @@ class Validator:
             return Outcome.INVALID
 
         # src
-        if (src["pos_x"] < 1 or src["pos_x"] > 5) and not src["pile"]:
+        if (src["pos_x"] < 0 or src["pos_x"] > 4) and not src["pile"]:
             return Outcome.INVALID
 
-        if (src["pos_y"] < 1 or src["pos_y"] > 5) and not src["pile"]:
+        if (src["pos_y"] < 0 or src["pos_y"] > 4) and not src["pile"]:
             return Outcome.INVALID
 
         src_elem = self._find_top(oldboard[src["pos_x"]][src["pos_y"]])
-        if not src["pile"] and src_elem.get_color() != move["color"]:
+        if type(src_elem) != int and (not src["pile"] and src_elem.get_color() != move["color"]):
             return Outcome.INVALID
 
         if src["pile"] == True and not move["first_turn"]:
@@ -73,8 +73,9 @@ class Validator:
             return Outcome.INVALID
 
         # Prevents idle move
-        if src["pos_y"] == des["pos_y"] and src["pos_x"] == des["pos_x"] and not src["pile"]:
-            return Outcome.INVALID
+        if src["pos_y"] == des["pos_y"] and src["pos_x"] == des["pos_x"]:
+            if not src["pile"] and des["orientation"] == src_elem.get_orientation():
+                return Outcome.INVALID
 
         return Outcome.VALID
 
