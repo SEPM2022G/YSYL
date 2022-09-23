@@ -7,6 +7,7 @@ from src.constants import Piece, Turn
 
 
 class Player(Widget):
+    """ Information about the turn and how many pices """
     # When turn, n_black_pieces, or n_white_pices
     # changes the view will update
     turn: Reactive[RenderableType] = Reactive(Turn.BLACK)
@@ -14,16 +15,19 @@ class Player(Widget):
     n_white_pieces: Reactive[RenderableType] = Reactive("")
 
     def __init__(self) -> None:
+        """
+        Set turn to black and 21 pices to each player
+        """
         super().__init__()
-        self.turn = Turn.BLACK  # Black is alwase the one who starts
-        self.n_black_pieces = 21  # Initaly black has 21 pieces
-        self.n_white_pieces = 21  # Initaly white has 21 pieces
+        self.reset()
 
     def render(self) -> Panel:
         MARKDOWN = "## Player info\n"
         MARKDOWN += f"It is **{self.turn.value}'s** turn\n\n"
-        MARKDOWN += f"{Piece.BS.value} {self.n_black_pieces} black pieces\n\n"
-        MARKDOWN += f"{Piece.WS.value} {self.n_white_pieces} white pieces"
+        MARKDOWN += f"{self.n_black_pieces} black pieces "
+        MARKDOWN += f"( {Piece.BS.value} and {Piece.BL.value} )\n\n"
+        MARKDOWN += f"{self.n_white_pieces} white pieces "
+        MARKDOWN += f"( {Piece.WS.value} and {Piece.WL.value} ) "
         return Markdown(MARKDOWN)
 
     def set_turn(self, turn: Turn) -> Turn:
@@ -47,3 +51,8 @@ class Player(Widget):
 
     def set_n_white_pieces(self, n_white_pieces: int) -> None:
         self.n_white_pieces = n_white_pieces
+
+    def reset(self) -> None:
+        self.turn = Turn.BLACK  # Black is alwase the one who starts
+        self.n_black_pieces = 21  # Initaly black has 21 pieces
+        self.n_white_pieces = 21  # Initaly white has 21 pieces

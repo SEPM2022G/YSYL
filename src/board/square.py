@@ -6,16 +6,25 @@ from src.constants import Piece
 
 
 class Square(Widget):
+    """ A square contains the pieces that has been placed on it """
     # When mouse_over or pieces changes the view will update
     mouse_over: Reactive[RenderableType] = Reactive(False)
     pieces: Reactive[RenderableType] = Reactive([])
 
-    def __init__(self, pieces: list[Piece], x: int, y: int, parent, move_piece) -> None:
+    def __init__(self, x: int, y: int, move_piece) -> None:
+        """
+        Create empty square and sets the squares cordinets (x, y).
+
+        :param x: Which column the square is in.
+        :param y: Which row the square is in.
+        :param parent: The board.
+        :param move_piece: A function that moves/lay a piece.
+        """
         super().__init__()
         self.move_piece = move_piece
         self.x = x
         self.y = y
-        self.pieces = pieces  # The stack of pieces per square
+        self.reset()
 
     def render(self) -> Panel:
         return Panel(self.render_pieces(),
@@ -54,17 +63,13 @@ class Square(Widget):
 
     def on_click(self) -> None:
         # TODO: add piece depending on option and color
-        #self.parent.set_click(self.x, self.y)
         self.move_piece(self.x, self.y)
-
-        #self.add_piece(Piece.WL)
-        # self.set_pieces([Piece.WL])
 
     def get_pieces(self) -> list(Piece):
         return self.pieces
 
     def add_piece(self, piece: Piece) -> None:
-        _pieces = self.pieces.copy()
+        _pieces = self.pieces.copy()  # Will cause bugs if not copy
         _pieces.insert(0, piece)
         self.set_pieces(_pieces)
 
@@ -80,3 +85,6 @@ class Square(Widget):
 
     def on_leave(self) -> None:
         self.mouse_over = False
+
+    def reset(self) -> None:
+        self.pieces = []  # The stack of pieces per square
