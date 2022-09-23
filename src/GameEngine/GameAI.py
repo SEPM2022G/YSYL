@@ -3,15 +3,15 @@
 from cmath import pi
 import time
 import random
-from wsgiref.validate import validator
+from copy import deepcopy
 
-from GameEngine.Components.Controller import Controller
-from GameEngine.Components.IOProcessor import IOProcessor
-from GameEngine.Components.Validator import Validator
-from GameEngine.Components.StateManager import StateManager
-from GameEngine.Components.MoveController import MoveController
-from GameEngine.Objects.Enums import Orientation, Color
-from GameEngine.Objects.Outcome import Outcome
+from src.GameEngine.Components.Controller import Controller
+from src.GameEngine.Components.IOProcessor import IOProcessor
+from src.GameEngine.Components.Validator import Validator
+from src.GameEngine.Components.StateManager import StateManager
+from src.GameEngine.Components.MoveController import MoveController
+from src.GameEngine.Objects.Enums import Orientation, Color
+from src.GameEngine.Objects.Outcome import Outcome
 
 class GameAI:
     def __init__(self, difficulty) -> None:
@@ -19,7 +19,6 @@ class GameAI:
         self.controller = Controller()
         self.ioProcessor = IOProcessor()
         self.validator = Validator()
-        self.stateManager = StateManager()
         self.moveController = MoveController()
         self.stopGame = False
         self.fromPile = True
@@ -66,7 +65,7 @@ class GameAI:
             print("this is printing from GameAI.py -> start() function")
             time.sleep(2)
     
-    def _create_move(pile : bool, src_x : int, src_y : int, des_x : int, des_y : int, 
+    def _create_move(self, pile : bool, src_x : int, src_y : int, des_x : int, des_y : int, 
                 orientatiton : Orientation, pieces : int, color : Color, first_turn : bool):
         move = {
             "src": {
@@ -85,7 +84,7 @@ class GameAI:
         }
         return move
     
-    def _pieces_of_same_color_in_row(list, top_index, color):
+    def _pieces_of_same_color_in_row(self, list, top_index, color):
         count = 0
         for i in reversed(range(0, top_index)):
             if list[i].get_color().value == color.value:
@@ -104,9 +103,8 @@ class GameAI:
             return False
     
     #TODO must handle the first turn so the AI makes the best move
-    def _create_moves_that_player_can_make(self, color):        
-        state = self.stateManager().get_state()
-        moves = []
+    def _create_moves_that_player_can_make(self, state, color):        
+        valid_moves = []
 
         #All the possible moves when moving a piece or pieces on the board
         #yxi kaksi kolme (It looks nicer this way than encapsulting it in functions in my opinon :))) )
@@ -125,48 +123,61 @@ class GameAI:
                                                 #Flat
                                                 move = self._create_move(False, src_x, src_y, des_x, des_y, Orientation.FLAT, pieces, color, False)
                                                 if self._valid_move(move, state):
-                                                    moves.append(move)
+                                                    valid_moves.append(move)
 
                                                 #Standing
                                                 move = self._create_move(False, src_x, src_y, des_x, des_y, Orientation.STANDING, pieces, color, False)
                                                 if self._valid_move(move, state):
-                                                    moves.append(move)
+                                                    valid_moves.append(move)
+                                break
         
         #All the possible moves when taken from the pile
-        for x in range(0, 5):
-            for y in range(0, 5):
+        for des_x in range(0, 5):
+            for des_y in range(0, 5):
                 if state[f"{color.name.lower()}_pieces_pile"] > 0:
                     #Standing
-                    move = self._create_move(True, 0, 0, x, y, Orientation.STANDING, 1, color, False)
+                    move = self._create_move(True, 0, 0, des_x, des_y, Orientation.STANDING, 1, color, False)
                     if self._valid_move(move, state):
-                        moves.append(move)
+                        valid_moves.append(move)
 
                     #Flat
-                    move = self._create_move(True, 0, 0, x, y, Orientation.FLAT, 1, color, False)
+                    move = self._create_move(True, 0, 0, des_x, des_y, Orientation.FLAT, 1, color, False)
                     if self._valid_move(move, state):
-                        moves.append(move)
+                        valid_moves.append(move)
 
         
-        return moves
+        return valid_moves
 
     def evaluation(self):
         return 42
     
-    def minimax(self, depth, maximazing_player):   
-        state = self.stateManager.get_state()
-
+    def minimax(self, depth, color, state_manager):   
         if depth == 0:
-            return #evaluation
+            return state_manager.print_state()
+        
+        state = state_manager.get_state()
 
-        valid_moves = self._create_moves_that_player_can_make(Color.WHITE)
+        if color.value == Color.WHITE.value: 
+            valid_moves = self._create_moves_that_player_can_make(state, Color.WHITE)
+            maxEval = float('-inf')
+            for move in valid_moves:
+                state_manager_copy = deepcopy(state_manager)
+                state_manager_copy.update_state(move)
+                eval = self.minimax(depth-1, Color.BLACK, state_manager_copy)
+                #maxEval = max(maxEval, eval)
 
-        if maximazing_player: 
-            maxEval = float('inf')
-            for child in valid_moves:
-                eval = self.minimax(depth-1, False)
-                maxEval = max(maxEval, eval)
+            return maxEval
+
+
         else:
-            minEval = float('-inf')
-            for child in valid_moves:
-                eval = self.minimax(depth-1, False)
-                minEval = max(minEval, eval)
+            valid_moves = self._create_moves_that_player_can_make(state, Color.BLACK)
+            minEval = float('inf')
+            for move in valid_moves:
+                state_manager_copy = deepcopy(state_manager)
+                state_manager_copy.update_state(move)
+                eval = self.minimax(depth-1, Color.WHITE, state_manager_copy)
+                #minEval = min(minEval, eval)
+
+            return minEval
+
+

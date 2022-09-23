@@ -93,21 +93,4 @@ class StateManager:
 
         return self.get_state()
 
-    def create_move(pile : bool, src_x : int, src_y : int, des_x : int, des_y : int, 
-                orientatiton : Orientation, pieces : int, color : Color, first_turn : bool):
-        move = {
-            "src": {
-                "pile": pile,
-                "pos_x": src_x,
-                "pos_y": src_y,
-            },
-            "des": {
-                "pos_x": des_x,
-                "pos_y": des_y,
-                "orientation": orientatiton
-            },
-            "pieces": pieces,
-            "color": color,
-            "first_turn": first_turn
-        }
-        return move
+  
