@@ -5,7 +5,6 @@ from src.GameEngine.Objects.Outcome import Outcome
 from src.GameEngine.Objects.Enums import Orientation, Color
 v = Validator()
 
-
 # Init
 def test_init():
     state = {"white_pieces_pile": 21, "black_pieces_pile": 21,
@@ -27,7 +26,6 @@ def test_init():
     }
     result = v.check(move, state, state)
     assert (result == Outcome.VALID)
-
 
 def test_out_of_bounds():
     state = {"white_pieces_pile": 21, "black_pieces_pile": 21,
@@ -127,7 +125,7 @@ def test_invalid_n_pieces():
     assert (result == Outcome.INVALID)
 
 
-def test_first_turn():
+def test_first_turn_1():
     state = {"white_pieces_pile": 21, "black_pieces_pile": 21,
              "board": np.zeros(shape=(5, 5, 42), dtype=object)}
     move1 = {
@@ -146,7 +144,11 @@ def test_first_turn():
         "first_turn": True
     }
     result = v.check(move1, state, state)
-    assert (result == Outcome.INVALID)
+    assert (result == Outcome.VALID)
+
+def test_first_turn_2():
+    state = {"white_pieces_pile": 21, "black_pieces_pile": 21,
+             "board": np.zeros(shape=(5, 5, 42), dtype=object)}
     move2 = {
         "src": {
             "pile": False,
@@ -162,8 +164,13 @@ def test_first_turn():
         "color": Color.WHITE,
         "first_turn": True
     }
-    result = v.check(move1, state, state)
+    result = v.check(move2, state, state)
     assert (result == Outcome.INVALID)
+
+def test_first_turn_3():
+    state = {"white_pieces_pile": 21, "black_pieces_pile": 21,
+             "board": np.zeros(shape=(5, 5, 42), dtype=object)}
+
     move3 = {
         "src": {
             "pile": True,
@@ -179,7 +186,7 @@ def test_first_turn():
         "color": Color.WHITE,
         "first_turn": True
     }
-    result = v.check(move1, state, state)
+    result = v.check(move3, state, state)
     assert (result == Outcome.INVALID)
 
 
@@ -346,6 +353,7 @@ def test_idle_move():
     }
     result = v.check(move1, state, state)
     assert (result == Outcome.INVALID)
+
 
 def test_change_in_place_move():
     state = {"white_pieces_pile": 21, "black_pieces_pile": 21,

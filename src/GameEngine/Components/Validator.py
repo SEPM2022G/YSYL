@@ -24,11 +24,8 @@ class Validator:
             return Outcome.INVALID
 
         # First round
-        if move["first_turn"] == True:
-            if src["pile"]:
-                return Outcome.INVALID
-            if move["pieces"] != 1:
-                return Outcome.INVALID
+        if move["first_turn"] and (not src["pile"] or move["pieces"] != 1):
+            return Outcome.INVALID
 
         # des
         if des["pos_x"] < 0 or des["pos_x"] > 4:
@@ -42,7 +39,6 @@ class Validator:
             return Outcome.INVALID
 
         if des_elem != -1 and des_elem.get_orientation() == Orientation.STANDING:
-            print(des_elem)
             return Outcome.INVALID
 
         # src
@@ -73,7 +69,7 @@ class Validator:
             return Outcome.INVALID
 
         # Prevents idle move
-        if src["pos_y"] == des["pos_y"] and src["pos_x"] == des["pos_x"]:
+        if src["pos_y"] == des["pos_y"] and src["pos_x"] == des["pos_x"] and src_elem != -1:
             if not src["pile"] and des["orientation"] == src_elem.get_orientation():
                 return Outcome.INVALID
 
