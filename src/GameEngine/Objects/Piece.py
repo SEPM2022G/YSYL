@@ -16,3 +16,12 @@ class Piece:
 
     def __str__(self):
         return f"({self.color.name}, {self.orientation.name})"
+
+    def __eq__(self, other):
+        if type(self) != type(other): return False
+        return self.color == other.color and self.orientation == other.orientation
+
+    def __neq__(self, other):
+        if type(self) != type(other): return True
+        return self.color != other.color or self.orientation != other.orientation
+
