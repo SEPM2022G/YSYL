@@ -61,15 +61,31 @@ class Square(Widget):
         return pieces_str
 
     def on_click(self) -> None:
+        # Behavior for moving a stack
+        if self.parent.get_option() == SelectedOption.stack:
+            if not self.parent.hold:
+                self.parent.set_coords(self.x, self.y)
+                self.parent.move_handler()
+                self.parent.hold = True
+                return
+
+            # Go on to default behavior
+
+        # Behavior for moving pieces between squares
         if self.parent.get_option() == SelectedOption.move:
             if not self.parent.hold:
                 self.parent.set_from_coords(self.x, self.y)
                 self.parent.hold = True
             else:
                 self.parent.hold = False
-        else:
+
+            # Go on to default behavior
+
+        # Dont hold if we arent moving something
+        if (self.parent.get_option() != SelectedOption.move) and (self.parent.get_option() != SelectedOption.stack):
             self.parent.hold = False
 
+        # Default behavior
         self.parent.set_coords(self.x, self.y)
         self.parent.move_handler()
 
@@ -109,6 +125,17 @@ class Square(Widget):
         self.set_pieces(_pieces)
 
         return True
+
+    def pick_up_stack(self) -> list(Piece):
+        if (len(self.pieces) == 0):
+            return []
+
+        self.parent.hold = True
+
+        stack = self.pieces.copy()
+        remainder = stack.pop(-1)
+        self.set_pieces([remainder])
+        return stack
 
     def set_pieces(self, pieces: list(Piece)) -> None:
         self.pieces = pieces
