@@ -88,9 +88,9 @@ class Square(Widget):
             self.set_pieces(_pieces)
             return piece
 
-    def rotate(self) -> None:
-        if (not len(self.pieces)):
-            return
+    def rotate(self) -> bool:
+        if (len(self.pieces) == 0):
+            return False
 
         _pieces = self.pieces.copy()  # Will cause bugs if not copy
         _piece = _pieces.pop(0)  # remove the top piece
@@ -107,6 +107,8 @@ class Square(Widget):
 
         _pieces.insert(0, _piece)
         self.set_pieces(_pieces)
+
+        return True
 
     def set_pieces(self, pieces: list(Piece)) -> None:
         self.pieces = pieces

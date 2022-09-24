@@ -6,7 +6,7 @@ from src.constants import Piece, Turn, DIM, SelectedOption
 class Board(GridView):
     """ The right view containging all squares """
 
-    def __init__(self, update_turn, get_option) -> None:
+    def __init__(self, update_turn, get_option, get_turn) -> None:
         """
         Create empty squares whith defined cordinets (x, y).
 
@@ -17,6 +17,7 @@ class Board(GridView):
         super().__init__()
         self.update_turn = update_turn
         self.get_option = get_option
+        self.get_turn = get_turn
         self.x = 0
         self.y = 0
         self.x_from = 0
@@ -53,7 +54,7 @@ class Board(GridView):
 
     def move_piece(self, x_end: int, y_end: int,
                    x_start: int = -1, y_start: int = -1) -> int:
-        turn = self.update_turn()
+        turn = self.get_turn()
         piece = (Piece.WL, Piece.BL)[turn == Turn.BLACK]
 
         if (x_start == -1 and y_start == -1):
@@ -63,30 +64,35 @@ class Board(GridView):
             if piece:
                 self.squares[y_end][x_end].add_piece(piece)
         # TODO: error handling?
-        return 0
+        return True
 
-    def rotate_piece(self, x: int, y: int) -> None:
-        self.squares[y][x].rotate()
+    def rotate_piece(self, x: int, y: int) -> bool:
+        return self.squares[y][x].rotate()
 
     def move_handler(self) -> None:
         # fetch coordinates, i.e. x and y position of a square
         x, y = self.get_coords()
         x_from, y_from = self.get_from_coords()
 
+        valid_move = True
+
         match self.get_option():
             case SelectedOption.lying:
                 # place a lying piece
-                self.move_piece(x, y)
+                valid_move = self.move_piece(x, y)
             case SelectedOption.standing:
                 # rotate a piece
-                self.rotate_piece(x, y)
+                valid_move = self.rotate_piece(x, y)
             case SelectedOption.stack:
                 # move a stack
                 pass
             case SelectedOption.move:
                 # move a piece
                 if not self.hold:
-                    self.move_piece(x, y, x_from, y_from)
+                    valid_move = self.move_piece(x, y, x_from, y_from)
+
+        if (not self.hold) and valid_move:
+            self.update_turn()
 
     def reset(self) -> None:
         self.squares = [[Square(x, y, self)

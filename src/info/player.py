@@ -34,6 +34,9 @@ class Player(Widget):
         self.turn = turn
         return turn
 
+    def get_turn(self) -> Turn:
+        return self.turn
+
     def turn_black(self) -> Turn:
         return self.set_turn(Turn.BLACK)
 
