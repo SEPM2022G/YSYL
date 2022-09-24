@@ -11,6 +11,8 @@ class Board(GridView):
         Create empty squares whith defined cordinets (x, y).
 
         :param update_turn: A function that updates the turn in info.
+        :param get_option: A function that returns
+                           option laying, rotate, and stack
         """
         super().__init__()
         self.update_turn = update_turn
@@ -74,13 +76,12 @@ class Board(GridView):
 
         return 0
 
-    def rotate_piece(self, x, y) -> None:
+    def rotate_piece(self, x: int, y: int) -> None:
         self.squares[y][x].rotate()
 
     def move_handler(self) -> None:
-        #fetch coords
+        # fetch coordinates, i.e. x and y position of a square
         x, y = self.get_coords()
-        #x_from, y_from = self.get_from_coords()
 
         match self.get_option():
             case SelectedOption.lying:
@@ -89,8 +90,6 @@ class Board(GridView):
                 self.rotate_piece(x, y)
             case SelectedOption.stack:
                 pass
-
-        return
 
     def reset(self) -> None:
         self.squares = [[Square(x, y, self)

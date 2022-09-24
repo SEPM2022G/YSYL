@@ -78,23 +78,24 @@ class Square(Widget):
             return self.pieces.pop(0)  # the last piece is the bottom piece
 
     def rotate(self) -> None:
-        idx = 0
-
-        if (not len(self.pieces)): 
+        if (not len(self.pieces)):
             return
 
-        match self.pieces[idx]:
+        _pieces = self.pieces.copy()  # Will cause bugs if not copy
+        _piece = _pieces.pop(0)  # remove the top piece
+
+        match _piece:
             case Piece.WL:
-                self.pieces[idx] = Piece.WS
+                _piece = Piece.WS
             case Piece.BL:
-                self.pieces[idx] = Piece.BS
+                _piece = Piece.BS
             case Piece.WS:
-                self.pieces[idx] = Piece.WL
+                _piece = Piece.WL
             case Piece.BS:
-                self.pieces[idx] = Piece.BL
-            case other:
-                return
-        return
+                _piece = Piece.BL
+
+        _pieces.insert(0, _piece)
+        self.set_pieces(_pieces)
 
     def set_pieces(self, pieces: list(Piece)) -> None:
         self.pieces = pieces
