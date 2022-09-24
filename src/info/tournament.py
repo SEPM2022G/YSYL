@@ -17,7 +17,8 @@ class Tournament(Widget):
 
     def render(self) -> Markdown:
         MARKDOWN = "## Tournament score\n"
-        MARKDOWN += f"The score is *{self.score}*\n\n"
+        MARKDOWN += "The score is: \n\n"
+        MARKDOWN += f"*{self.score}*\n\n"
         MARKDOWN += f"You are playing *{self.n_games}* games"
         return Markdown(MARKDOWN)
 
