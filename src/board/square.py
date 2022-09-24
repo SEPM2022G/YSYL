@@ -2,7 +2,7 @@ from textual.widget import Widget
 from textual.reactive import Reactive
 from rich.panel import Panel
 from rich.console import RenderableType
-from src.constants import Piece
+from src.constants import Piece, SelectedOption
 
 
 class Square(Widget):
@@ -61,7 +61,15 @@ class Square(Widget):
         return pieces_str
 
     def on_click(self) -> None:
-        # TODO: add piece depending on option and color
+        if self.parent.get_option() == SelectedOption.move:
+            if not self.parent.hold:
+                self.parent.set_from_coords(self.x, self.y)
+                self.parent.hold = True
+            else:
+                self.parent.hold = False
+        else:
+            self.parent.hold = False
+
         self.parent.set_coords(self.x, self.y)
         self.parent.move_handler()
 
@@ -75,7 +83,10 @@ class Square(Widget):
 
     def remove_piece(self) -> Piece:
         if (len(self.pieces) != 0):
-            return self.pieces.pop(0)  # the last piece is the bottom piece
+            _pieces = self.pieces.copy()  # Will cause bugs if not copy
+            piece = _pieces.pop(0)
+            self.set_pieces(_pieces)
+            return piece
 
     def rotate(self) -> None:
         if (not len(self.pieces)):

@@ -21,6 +21,7 @@ class Board(GridView):
         self.y = 0
         self.x_from = 0
         self.y_from = 0
+        self.hold = False
         self.reset()
 
     async def on_mount(self) -> None:
@@ -50,19 +51,6 @@ class Board(GridView):
     def get_coords(self) -> int:
         return self.x, self.y
 
-    def set_click(self, x: int, y: int) -> None:
-        if(len(self.start) == 0):  # TODO: read options and see if we want to move a piece
-            self.start.append(x)
-            self.start.append(y)
-        elif(len(self.to) == 0):
-            self.to.append(x)
-            self.to.append(y)
-
-            # TODO: send request to API
-            self.move_piece(self.to[0], self.to[1],
-                            self.start[0], self.start[1])
-            self.to = self.start = []
-
     def move_piece(self, x_end: int, y_end: int,
                    x_start: int = -1, y_start: int = -1) -> int:
         turn = self.update_turn()
@@ -71,9 +59,10 @@ class Board(GridView):
         if (x_start == -1 and y_start == -1):
             self.squares[y_end][x_end].add_piece(piece)
         else:
-            piece = self.squares[x_start][y_start].remove_piece()
-            self.squares[y_end][x_end].add_piece(piece)
-
+            piece = self.squares[y_start][x_start].remove_piece()
+            if piece:
+                self.squares[y_end][x_end].add_piece(piece)
+        # TODO: error handling?
         return 0
 
     def rotate_piece(self, x: int, y: int) -> None:
@@ -82,14 +71,22 @@ class Board(GridView):
     def move_handler(self) -> None:
         # fetch coordinates, i.e. x and y position of a square
         x, y = self.get_coords()
+        x_from, y_from = self.get_from_coords()
 
         match self.get_option():
             case SelectedOption.lying:
+                # place a lying piece
                 self.move_piece(x, y)
             case SelectedOption.standing:
+                # rotate a piece
                 self.rotate_piece(x, y)
             case SelectedOption.stack:
+                # move a stack
                 pass
+            case SelectedOption.move:
+                # move a piece
+                if not self.hold:
+                    self.move_piece(x, y, x_from, y_from)
 
     def reset(self) -> None:
         self.squares = [[Square(x, y, self)
