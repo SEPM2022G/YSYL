@@ -21,5 +21,8 @@ class Options(Widget):
     def set_selected(self, selected: bool) -> None:
         self.selected = selected
 
+    def get_selected(self) -> bool:
+        return self.selected
+
     def on_click(self) -> None:
         self.func(self.option)

@@ -69,6 +69,16 @@ class Info(GridView):
         else:  # sanity check
             print(f"No such option {option}")
 
+    def get_option(self):
+        if (self.option_lying_widget.get_selected()):
+            return SelectedOption.lying
+        elif (self.option_standing_widget.get_selected()):
+            return SelectedOption.standing
+        elif (self.option_stack_widget.get_selected()):
+            return SelectedOption.stack
+        else:
+            return "None"
+
     def reset(self) -> None:
         self.tournament_widget.reset()
         self.player_widget.reset()

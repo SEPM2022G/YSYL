@@ -11,7 +11,7 @@ class PrettyGameApp(App):
 
     async def on_mount(self) -> None:
         self.info = Info()
-        self.board = Board(self.info.player_widget.next_turn)
+        self.board = Board(self.info.player_widget.next_turn, self.info.get_option)
         await self.view.dock(self.board, edge="left", size=100)
         await self.view.dock(self.info, edge="top")
 

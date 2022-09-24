@@ -11,17 +11,16 @@ class Square(Widget):
     mouse_over: Reactive[RenderableType] = Reactive(False)
     pieces: Reactive[RenderableType] = Reactive([])
 
-    def __init__(self, x: int, y: int, move_piece) -> None:
+    def __init__(self, x: int, y: int, parent) -> None:
         """
         Create empty square and sets the squares cordinets (x, y).
 
         :param x: Which column the square is in.
         :param y: Which row the square is in.
         :param parent: The board.
-        :param move_piece: A function that moves/lay a piece.
+        :param move_handler: A function that moves/lay a piece.
         """
         super().__init__()
-        self.move_piece = move_piece
         self.x = x
         self.y = y
         self.reset()
@@ -63,7 +62,8 @@ class Square(Widget):
 
     def on_click(self) -> None:
         # TODO: add piece depending on option and color
-        self.move_piece(self.x, self.y)
+        self.parent.set_coords(self.x, self.y)
+        self.parent.move_handler()
 
     def get_pieces(self) -> list(Piece):
         return self.pieces
@@ -76,6 +76,25 @@ class Square(Widget):
     def remove_piece(self) -> Piece:
         if (len(self.pieces) != 0):
             return self.pieces.pop(0)  # the last piece is the bottom piece
+
+    def rotate(self) -> None:
+        idx = 0
+
+        if (not len(self.pieces)): 
+            return
+
+        match self.pieces[idx]:
+            case Piece.WL:
+                self.pieces[idx] = Piece.WS
+            case Piece.BL:
+                self.pieces[idx] = Piece.BS
+            case Piece.WS:
+                self.pieces[idx] = Piece.WL
+            case Piece.BS:
+                self.pieces[idx] = Piece.BL
+            case other:
+                return
+        return
 
     def set_pieces(self, pieces: list(Piece)) -> None:
         self.pieces = pieces
