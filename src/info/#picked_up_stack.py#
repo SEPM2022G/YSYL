@@ -50,8 +50,9 @@ class PickedUpStack(Widget):
             piece = _pieces.pop(-1)
             self.set_pieces(_pieces)
             return piece
-        else:
-            return None
+
+    def get_len_pieces(self) -> list(Piece):
+
 
     def get_pieces(self) -> list(Piece):
         return self.pieces

@@ -68,20 +68,13 @@ class Board(GridView):
         return True
 
     def drop_piece(self, x: int, y: int) -> bool:
-        if len(self.stack) == 0:
+        piece = self.pop_stack()
+        if piece is None:
             self.hold = False
             return False
-
-        _stack = self.stack.copy()
-        piece = _stack.pop(-1) # TODO: double check index
-        self.pop_stack()
-        self.stack = _stack
-
-        if len(self.stack) == 0:
-            self.hold = False
-
-        self.squares[y][x].add_piece(piece)
-        return True
+        else:
+            self.squares[y][x].add_piece(piece)
+            return True
 
     def rotate_piece(self, x: int, y: int) -> bool:
         return self.squares[y][x].rotate()
@@ -105,9 +98,9 @@ class Board(GridView):
             case SelectedOption.stack:
                 # move a stack
                 if not self.hold:
-                    self.stack = self.squares[y][x].pick_up_stack()
-                    self.set_stack(self.stack)
-                    if (len(self.stack) == 0):
+                    stack = self.squares[y][x].pick_up_stack()
+                    self.set_stack(stack)
+                    if (len(stack) == 0):
                         valid_move = False
                 else:
                     self.drop_piece(x, y)
@@ -128,4 +121,3 @@ class Board(GridView):
         self.x_from = 0
         self.y_from = 0
         self.hold = False
-        self.stack = []
