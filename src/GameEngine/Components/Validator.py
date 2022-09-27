@@ -3,7 +3,6 @@ from src.GameEngine.Objects.Enums import Orientation, Color
 from src.GameEngine.Objects.Outcome import Outcome
 outcome = [Outcome.WIN_WHITE, Outcome.WIN_BLACK]
 
-
 class Validator:
     '''
     Validate moves and checks for win condition.
@@ -28,10 +27,10 @@ class Validator:
             return Outcome.INVALID
 
         # des
-        if des["pos_x"] < 0 or des["pos_x"] > 4:
+        if des["pos_x"] < 0 or des["pos_x"] > newboard.shape[1]-1:
             return Outcome.INVALID
 
-        if des["pos_y"] < 0 or des["pos_y"] > 4:
+        if des["pos_y"] < 0 or des["pos_y"] > newboard.shape[0]-1:
             return Outcome.INVALID
 
         des_elem = self._find_top(oldboard[des["pos_x"]][des["pos_y"]])
@@ -42,10 +41,10 @@ class Validator:
             return Outcome.INVALID
 
         # src
-        if (src["pos_x"] < 0 or src["pos_x"] > 4) and not src["pile"]:
+        if (src["pos_x"] < 0 or src["pos_x"] > newboard.shape[1]-1) and not src["pile"]:
             return Outcome.INVALID
 
-        if (src["pos_y"] < 0 or src["pos_y"] > 4) and not src["pile"]:
+        if (src["pos_y"] < 0 or src["pos_y"] > newboard.shape[0]-1) and not src["pile"]:
             return Outcome.INVALID
 
         src_elem = self._find_top(oldboard[src["pos_x"]][src["pos_y"]])
@@ -79,10 +78,11 @@ class Validator:
         '''
         Checks for a win
         '''
-        for y in range(0, 5):
+
+        for y in range(0, board.shape[0]):
 
             has_turned = False
-            for x in range(1, 5):
+            for x in range(1, board.shape[1]):
                 next_elem = self._find_top(board[x][y])
                 prev_elem = self._find_top(board[x - 1][y])
 
@@ -96,7 +96,7 @@ class Validator:
                         if prev_elem == prev_down:
                             path_check = self._check_path(x, y-1, board)
 
-                    if y < 4:
+                    if y < board.shape[0]-1:
                         prev_top = self._find_top(board[x-1][y+1])
                         if prev_elem == prev_top:
                             path_check = self._check_path(x, y+1, board)
@@ -115,7 +115,7 @@ class Validator:
         '''
         Helper function for checking outcomes in straight paths
         '''
-        for i in range(x, 5):
+        for i in range(x, board.shape[0]):
             next_elem = self._find_top(board[x][y])
             prev_elem = self._find_top(board[x - 1][y])
 
