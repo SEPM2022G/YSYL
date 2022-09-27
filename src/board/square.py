@@ -2,7 +2,7 @@ from textual.widget import Widget
 from textual.reactive import Reactive
 from rich.panel import Panel
 from rich.console import RenderableType
-from src.constants import Piece
+from src.constants import Piece, SelectedOption
 
 
 class Square(Widget):
@@ -11,17 +11,16 @@ class Square(Widget):
     mouse_over: Reactive[RenderableType] = Reactive(False)
     pieces: Reactive[RenderableType] = Reactive([])
 
-    def __init__(self, x: int, y: int, move_piece) -> None:
+    def __init__(self, x: int, y: int, parent) -> None:
         """
         Create empty square and sets the squares cordinets (x, y).
 
         :param x: Which column the square is in.
         :param y: Which row the square is in.
         :param parent: The board.
-        :param move_piece: A function that moves/lay a piece.
+        :param move_handler: A function that moves/lay a piece.
         """
         super().__init__()
-        self.move_piece = move_piece
         self.x = x
         self.y = y
         self.reset()
@@ -62,8 +61,33 @@ class Square(Widget):
         return pieces_str
 
     def on_click(self) -> None:
-        # TODO: add piece depending on option and color
-        self.move_piece(self.x, self.y)
+        # Behavior for moving a stack
+        if self.parent.get_option() == SelectedOption.stack:
+            if not self.parent.hold:
+                self.parent.set_coords(self.x, self.y)
+                self.parent.move_handler()
+                self.parent.hold = True
+                return
+
+            # Go on to default behavior
+
+        # Behavior for moving pieces between squares
+        if self.parent.get_option() == SelectedOption.move:
+            if not self.parent.hold:
+                self.parent.set_from_coords(self.x, self.y)
+                self.parent.hold = True
+            else:
+                self.parent.hold = False
+
+            # Go on to default behavior
+
+        # Dont hold if we arent moving something
+        if (self.parent.get_option() != SelectedOption.move) and (self.parent.get_option() != SelectedOption.stack):
+            self.parent.hold = False
+
+        # Default behavior
+        self.parent.set_coords(self.x, self.y)
+        self.parent.move_handler()
 
     def get_pieces(self) -> list(Piece):
         return self.pieces
@@ -75,7 +99,43 @@ class Square(Widget):
 
     def remove_piece(self) -> Piece:
         if (len(self.pieces) != 0):
-            return self.pieces.pop(0)  # the last piece is the bottom piece
+            _pieces = self.pieces.copy()  # Will cause bugs if not copy
+            piece = _pieces.pop(0)
+            self.set_pieces(_pieces)
+            return piece
+
+    def rotate(self) -> bool:
+        if (len(self.pieces) == 0):
+            return False
+
+        _pieces = self.pieces.copy()  # Will cause bugs if not copy
+        _piece = _pieces.pop(0)  # remove the top piece
+
+        match _piece:
+            case Piece.WL:
+                _piece = Piece.WS
+            case Piece.BL:
+                _piece = Piece.BS
+            case Piece.WS:
+                _piece = Piece.WL
+            case Piece.BS:
+                _piece = Piece.BL
+
+        _pieces.insert(0, _piece)
+        self.set_pieces(_pieces)
+
+        return True
+
+    def pick_up_stack(self) -> list(Piece):
+        if (len(self.pieces) == 0):
+            return []
+
+        self.parent.hold = True
+
+        stack = self.pieces.copy()
+        remainder = stack.pop(-1)
+        self.set_pieces([remainder])
+        return stack
 
     def set_pieces(self, pieces: list(Piece)) -> None:
         self.pieces = pieces

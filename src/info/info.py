@@ -26,20 +26,23 @@ class Info(GridView):
                                               self.select_option)
         self.option_stack_widget = Options(SelectedOption.stack,
                                            self.select_option)
+        self.option_move_widget = Options(SelectedOption.move,
+                                           self.select_option)
         self.notification_widget = Notifications()
 
     async def on_mount(self) -> None:
-        self.grid.add_column("col", repeat=3)
+        self.grid.add_column("col", repeat=4)
         self.grid.add_row("row", repeat=5)
         self.grid.add_areas(
-            title="col1-start|col3-end,row1",
+            title="col1-start|col4-end,row1",
             picked_up_stack="col3,row2-start|row3-end",
             tournament="col1-start|col2-end,row2",
             player="col1-start|col2-end,row3",
             lying="col1,row4",
             standing="col2,row4",
-            stack="col3,row4",
-            notification="col1-start|col3-end,row5",
+            move="col3,row4",
+            stack="col4,row4",
+            notification="col1-start|col4-end,row5",
         )
 
         self.grid.place(title=self.title_widget,
@@ -49,6 +52,7 @@ class Info(GridView):
                         lying=self.option_lying_widget,
                         standing=self.option_standing_widget,
                         stack=self.option_stack_widget,
+                        move=self.option_move_widget,
                         notification=self.notification_widget)
 
         self.option_lying_widget.set_selected(True)
@@ -58,6 +62,7 @@ class Info(GridView):
         self.option_lying_widget.set_selected(False)
         self.option_standing_widget.set_selected(False)
         self.option_stack_widget.set_selected(False)
+        self.option_move_widget.set_selected(False)
 
         # Set selected to true for the correct option
         if (option == SelectedOption.lying):
@@ -66,8 +71,22 @@ class Info(GridView):
             self.option_standing_widget.set_selected(True)
         elif (option == SelectedOption.stack):
             self.option_stack_widget.set_selected(True)
+        elif (option == SelectedOption.move):
+            self.option_move_widget.set_selected(True)
         else:  # sanity check
             print(f"No such option {option}")
+
+    def get_option(self):
+        if (self.option_lying_widget.get_selected()):
+            return SelectedOption.lying
+        elif (self.option_standing_widget.get_selected()):
+            return SelectedOption.standing
+        elif (self.option_stack_widget.get_selected()):
+            return SelectedOption.stack
+        elif (self.option_move_widget.get_selected()):
+            return SelectedOption.move
+        else:
+            return "None"
 
     def reset(self) -> None:
         self.tournament_widget.reset()
