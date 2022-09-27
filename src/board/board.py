@@ -18,10 +18,6 @@ class Board(GridView):
         self.update_turn = update_turn
         self.get_option = get_option
         self.get_turn = get_turn
-        self.x = 0
-        self.y = 0
-        self.x_from = 0
-        self.y_from = 0
         self.hold = False
         self.stack = []
         self.reset()
@@ -39,14 +35,14 @@ class Board(GridView):
             for n in x:
                 self.grid.add_widget(n)
 
-    def set_from_coords(self, x, y) -> None:
+    def set_from_coords(self, x: int, y: int) -> None:
         self.x_from = x
         self.y_from = y
 
     def get_from_coords(self) -> int:
         return self.x_from, self.y_from
 
-    def set_coords(self, x, y) -> None:
+    def set_coords(self, x: int, y: int) -> None:
         self.x = x
         self.y = y
 
@@ -69,6 +65,7 @@ class Board(GridView):
 
     def drop_piece(self, x: int, y: int) -> bool:
         if len(self.stack) == 0:
+            self.hold = False
             return False
 
         _stack = self.stack.copy()
@@ -120,5 +117,7 @@ class Board(GridView):
     def reset(self) -> None:
         self.squares = [[Square(x, y, self)
                          for x in range(DIM)] for y in range(DIM)]
-        self.to = []
-        self.start = []
+        self.x = 0
+        self.y = 0
+        self.x_from = 0
+        self.y_from = 0
