@@ -46,7 +46,10 @@ class PickedUpStack(Widget):
 
     def remove(self) -> Piece:
         if (len(self.pieces) != 0):
-            return self.pieces.pop(0)  # the last piece is the bottom piece
+            _pieces = self.pieces.copy()  # Will cause bugs if not copy
+            piece = _pieces.pop(-1)
+            self.set_pieces(_pieces)
+            return piece
 
     def get_pieces(self) -> list(Piece):
         return self.pieces

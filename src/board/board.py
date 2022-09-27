@@ -6,20 +6,24 @@ from src.constants import Piece, Turn, DIM, SelectedOption
 class Board(GridView):
     """ The right view containging all squares """
 
-    def __init__(self, update_turn, get_option, get_turn) -> None:
+    def __init__(self, update_turn, get_option, get_turn, set_stack,
+                 pop_stack) -> None:
         """
         Create empty squares whith defined cordinets (x, y).
 
-        :param update_turn: A function that updates the turn in info.
-        :param get_option: A function that returns
-                           option laying, rotate, and stack
+        :param update_turn: function that updates the turn in info.
+        :param get_option: function that returns option laying,
+                           rotate, and stack
+        :param get_turn: function that returns who turn it is
+        :param set_stack: function that sets a stack with arg list(pieces)
+        :param remove: function that pops the last piece from stack
         """
         super().__init__()
         self.update_turn = update_turn
         self.get_option = get_option
         self.get_turn = get_turn
-        self.hold = False
-        self.stack = []
+        self.set_stack = set_stack
+        self.pop_stack = pop_stack
         self.reset()
 
     async def on_mount(self) -> None:
@@ -70,6 +74,7 @@ class Board(GridView):
 
         _stack = self.stack.copy()
         piece = _stack.pop(-1) # TODO: double check index
+        self.pop_stack()
         self.stack = _stack
 
         if len(self.stack) == 0:
@@ -101,6 +106,7 @@ class Board(GridView):
                 # move a stack
                 if not self.hold:
                     self.stack = self.squares[y][x].pick_up_stack()
+                    self.set_stack(self.stack)
                     if (len(self.stack) == 0):
                         valid_move = False
                 else:
@@ -121,3 +127,5 @@ class Board(GridView):
         self.y = 0
         self.x_from = 0
         self.y_from = 0
+        self.hold = False
+        self.stack = []

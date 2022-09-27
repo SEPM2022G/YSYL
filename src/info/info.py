@@ -61,7 +61,6 @@ class Info(GridView):
                         notification=self.notification_widget)
 
         self.option_lying_widget.set_selected(True)
-        self.picked_up_stack_widget.set_pieces([Piece.WL, Piece.BL])
 
     def select_option(self, option) -> None:
         # Unselect all buttons
