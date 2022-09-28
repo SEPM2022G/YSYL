@@ -45,8 +45,10 @@ class Player(Widget):
 
     def next_turn(self) -> Turn:
         if self.turn == Turn.WHITE:
+            self.decrease_n_white_pieces()
             return self.turn_black()
         elif self.turn == Turn.BLACK:
+            self.decrease_n_black_pieces()
             return self.turn_white()
 
     def set_n_black_pieces(self, n_black_pieces: int) -> None:
@@ -54,6 +56,18 @@ class Player(Widget):
 
     def set_n_white_pieces(self, n_white_pieces: int) -> None:
         self.n_white_pieces = n_white_pieces
+
+    def get_n_black_pieces(self) -> int:
+        return self.n_black_pieces
+
+    def get_n_white_pieces(self) -> int:
+        return self.n_white_pieces
+
+    def decrease_n_black_pieces(self) -> None:
+        self.n_black_pieces -= 1
+
+    def decrease_n_white_pieces(self) -> None:
+        self.n_white_pieces -= 1
 
     def reset(self) -> None:
         self.turn = Turn.BLACK  # Black is alwase the one who starts
