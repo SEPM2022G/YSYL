@@ -1,7 +1,6 @@
 from textual.app import App
 from src.board.board import Board
 from src.info.info import Info
-import time
 
 class PrettyGameApp(App):
     async def on_load(self) -> None:
@@ -32,7 +31,4 @@ class PrettyGameApp(App):
         self.board.reset()
 
 
-while True:
-    print("start menue")
-    time.sleep(2)
-    PrettyGameApp.run(log="textual.log")
+PrettyGameApp.run(log="textual.log")
