@@ -2,7 +2,6 @@ from textual.app import App
 from src.board.board import Board
 from src.info.info import Info
 
-
 class PrettyGameApp(App):
     async def on_load(self) -> None:
         """Sent before going in to application mode."""
@@ -11,7 +10,11 @@ class PrettyGameApp(App):
 
     async def on_mount(self) -> None:
         self.info = Info()
-        self.board = Board(self.info.player_widget.next_turn, self.info.get_option, self.info.player_widget.get_turn)
+        self.board = Board(self.info.player_widget.next_turn,
+                           self.info.get_option,
+                           self.info.player_widget.get_turn,
+                           self.info.picked_up_stack_widget.set_pieces,
+                           self.info.picked_up_stack_widget.remove)
         await self.view.dock(self.board, edge="left", size=100)
         await self.view.dock(self.info, edge="top")
 

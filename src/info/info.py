@@ -1,11 +1,13 @@
 from textual.views import GridView
-from textual.widgets import Placeholder  # TODO: remove when widget for move stack exists
-from src.constants import SelectedOption
+from textual.widgets import ScrollView
+from src.constants import SelectedOption, Piece
 from src.info.title import Title
 from src.info.player import Player
 from src.info.options import Options
 from src.info.tournament import Tournament
 from src.info.notifications import Notifications
+from src.info.picked_up_stack import PickedUpStack
+from rich.panel import Panel
 
 
 class Info(GridView):
@@ -19,7 +21,8 @@ class Info(GridView):
         self.title_widget = Title()
         self.tournament_widget = Tournament()
         self.player_widget = Player()
-        self.picked_up_stack_widget = Placeholder()  # TODO: change to proper widget
+        self.rules_widget = ScrollView(Panel("TODO", title="Rules"))  # TODO: new widget
+        self.picked_up_stack_widget = PickedUpStack()  # TODO: change to proper widget
         self.option_lying_widget = Options(SelectedOption.lying,
                                            self.select_option)
         self.option_standing_widget = Options(SelectedOption.standing,
@@ -36,6 +39,7 @@ class Info(GridView):
         self.grid.add_areas(
             title="col1-start|col4-end,row1",
             picked_up_stack="col3,row2-start|row3-end",
+            rules="col4,row2-start|row3-end",
             tournament="col1-start|col2-end,row2",
             player="col1-start|col2-end,row3",
             lying="col1,row4",
@@ -47,6 +51,7 @@ class Info(GridView):
 
         self.grid.place(title=self.title_widget,
                         picked_up_stack=self.picked_up_stack_widget,
+                        rules=self.rules_widget,
                         tournament=self.tournament_widget,
                         player=self.player_widget,
                         lying=self.option_lying_widget,
