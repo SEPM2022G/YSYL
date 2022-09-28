@@ -10,8 +10,9 @@ class IOProcessor:
         with open("config.json", encoding = 'utf-8') as conf:
             return json.load(conf)
 
-    def readDifficulty(self, readFromConsole):
+    def readDifficulty(self, readFromConsole, path="input/init.json"):
         difficulty = -1
+        # print(os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "input", "init.json"))
         # it is configurable to read difficulty from a file or read from console
         if ( readFromConsole ) :
             print("1 -> Easy")
@@ -26,7 +27,7 @@ class IOProcessor:
                 except:
                     print("Invalid input for difficulty")
         else:
-            with open("input/init.json", encoding = 'utf-8') as init:
+            with open(path, encoding = 'utf-8') as init:
                 initialize = json.load(init)
                 difficulty = initialize['difficulty']
         
