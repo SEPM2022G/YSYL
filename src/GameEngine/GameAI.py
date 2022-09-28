@@ -20,6 +20,7 @@ class GameAI:
         self.stopGame = False
         self.fromPile = True
         self.best_move = None
+        self.init_depth = None
     
 # OBS HÅRDKODAD FÖR VIT GLÖM EJ
 
@@ -106,18 +107,18 @@ class GameAI:
 
         #All the possible moves when moving a piece or pieces on the board
         #yxi kaksi kolme (It looks nicer this way than encapsulting it in functions in my opinon :))) )
-        for src_x in range(0, state["board"].shape[1]):
-            for src_y in range(0, state["board"].shape[0]):
+        for src_x in range(0, state["board"].shape[0]):
+            for src_y in range(0, state["board"].shape[1]):
                     list_z = state["board"][src_x][src_y]
                     if list_z[0] == 0:
                         continue  
                     else:
-                        for i in range(0, state["board"].shape[2]):
+                        for i in range(1, state["board"].shape[2]):
                             if list_z[i] == 0:
                                 count = self._pieces_of_same_color_in_row(list_z, i, color)
                                 for pieces in range(0, count):
-                                    for des_x in range(0, state["board"].shape[1]):
-                                        for des_y in range(0, state["board"].shape[0]):
+                                    for des_x in range(0, state["board"].shape[0]):
+                                        for des_y in range(0, state["board"].shape[1]):
                                                 #Flat
                                                 move = self._create_move(False, src_x, src_y, des_x, des_y, Orientation.FLAT, pieces, color, False)
                                                 if self._valid_move(move, state):
@@ -130,8 +131,8 @@ class GameAI:
                                 break
         
         #All the possible moves when taken from the pile
-        for des_x in range(0, state["board"].shape[1]):
-            for des_y in range(0, state["board"].shape[0]):
+        for des_x in range(0, state["board"].shape[0]):
+            for des_y in range(0, state["board"].shape[1]):
                 if state[f"{color.name.lower()}_pieces_pile"] > 0:
                     #Standing
                     move = self._create_move(True, 0, 0, des_x, des_y, Orientation.STANDING, 1, color, False)
@@ -153,11 +154,14 @@ class GameAI:
 
         return False
     
-    def minimax(self, depth, color, state_manager):   
+    def minimax(self, depth, color, state_manager, alpha=float("-inf"), beta=float("inf")):   
+        if self.init_depth == None:
+            self.init_depth = depth
+
         state = state_manager.get_state()
 
         if depth == 0 or self._game_over(state["board"]):
-            return state_manager.board_evaluation()
+            return state_manager.board_evaluation(color)
         
         if color.value == Color.WHITE.value: 
             valid_moves = self._create_moves_that_player_can_make(state, Color.WHITE)
@@ -165,11 +169,16 @@ class GameAI:
             for move in valid_moves:
                 state_manager_copy = deepcopy(state_manager)
                 state_manager_copy.update_state(move)
-                eval = self.minimax(depth-1, Color.BLACK, state_manager_copy)
+                eval = self.minimax(depth-1, Color.BLACK, state_manager_copy, alpha, beta)
                 maxEval = max(maxEval, eval)
 
                 if eval >= maxEval:
-                    self.best_move = move
+                    if depth == self.init_depth:
+                        self.best_move = move
+
+                alpha = max(alpha, maxEval)
+                if alpha >= beta:
+                    break
 
             return maxEval
         else:
@@ -178,11 +187,16 @@ class GameAI:
             for move in valid_moves:
                 state_manager_copy = deepcopy(state_manager)
                 state_manager_copy.update_state(move)
-                eval = self.minimax(depth-1, Color.WHITE, state_manager_copy)
+                eval = self.minimax(depth-1, Color.WHITE, state_manager_copy, alpha, beta)
                 minEval = min(minEval, eval)
 
                 if eval <= minEval:
-                    self.best_move = move
+                    if depth == self.init_depth:
+                        self.best_move = move
+                
+                beta = min(beta, minEval)
+                if beta <= alpha:
+                    break
 
             return minEval
 
