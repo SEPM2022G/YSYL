@@ -2,6 +2,7 @@ from textual.views import GridView
 from textual.widgets import ScrollView
 from src.constants import SelectedOption, Piece
 from src.info.title import Title
+from src.info.rules import Rules
 from src.info.player import Player
 from src.info.options import Options
 from src.info.tournament import Tournament
@@ -21,7 +22,7 @@ class Info(GridView):
         self.title_widget = Title()
         self.tournament_widget = Tournament()
         self.player_widget = Player()
-        self.rules_widget = ScrollView(Panel("TODO", title="Rules"))  # TODO: new widget
+        self.rules_widget = ScrollView(contents=Rules())
         self.picked_up_stack_widget = PickedUpStack()  # TODO: change to proper widget
         self.option_lying_widget = Options(SelectedOption.lying,
                                            self.select_option)
