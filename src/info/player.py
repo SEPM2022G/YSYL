@@ -3,7 +3,7 @@ from textual.reactive import Reactive
 from rich.panel import Panel
 from rich.markdown import Markdown
 from rich.console import RenderableType
-from src.constants import Piece, Turn
+from src.constants import Piece, Turn, PlayerType
 
 
 class Player(Widget):
@@ -11,6 +11,8 @@ class Player(Widget):
     # When turn, n_black_pieces, or n_white_pices
     # changes the view will update
     turn: Reactive[RenderableType] = Reactive(Turn.BLACK)
+    player1: Reactive[RenderableType] = Reactive(PlayerType.PLAYER1)
+    player2: Reactive[RenderableType] = Reactive(PlayerType.PLAYER2)
     n_black_pieces: Reactive[RenderableType] = Reactive("")
     n_white_pieces: Reactive[RenderableType] = Reactive("")
 
@@ -25,9 +27,9 @@ class Player(Widget):
         MARKDOWN = "## Player info\n"
         MARKDOWN += f"It is **{self.turn.value}'s** turn\n\n"
         MARKDOWN += f"{self.n_black_pieces} black pieces "
-        MARKDOWN += f"( {Piece.BS.value} and {Piece.BL.value} )\n\n"
+        MARKDOWN += f"( {Piece.BS.value} and {Piece.BL.value} ) - {self.player1.value}\n\n"
         MARKDOWN += f"{self.n_white_pieces} white pieces "
-        MARKDOWN += f"( {Piece.WS.value} and {Piece.WL.value} ) "
+        MARKDOWN += f"( {Piece.WS.value} and {Piece.WL.value} ) - {self.player2.value}"
         return Markdown(MARKDOWN)
 
     def set_turn(self, turn: Turn) -> Turn:
@@ -68,6 +70,10 @@ class Player(Widget):
 
     def decrease_n_white_pieces(self) -> None:
         self.n_white_pieces -= 1
+
+    def set_player_color(self, player1: PlayerType, player2: PlayerType) -> None:
+        self.player1 = player1
+        self.player2 = player2
 
     def reset(self) -> None:
         self.turn = Turn.BLACK  # Black is alwase the one who starts
