@@ -33,16 +33,17 @@ class IOProcessor:
         
         return difficulty
 
-    def readInput(self, path="input/in.json") -> any:
+    def readInput(self, path="input/in.json"):
         with open(path, encoding = 'utf-8') as f:
-            fileData = json.load(f)
+            obj = json.load(f)
 
-        return fileData
+        return obj
 
-    def writeOutput(self, path="output/out.json"):
-        print("write to file")
+    def writeOutput(self, data, path="output/out.json"):
+        obj = json.dumps(data, indent=4)
+        
+        with open(path, "w") as outfile:
+            outfile.write(obj)
 
-    #def inputToMove(self) -> Move:
-    #    print("convert file data to Move object")
-    #    return Move()
+        return 1
 

@@ -1,5 +1,15 @@
 {
-    "moveNo":6,
-    "moveCalculated":true,
-    "nextMove": ""
+    "src": {
+        "pile": true,
+        "pos_x": 5,
+        "pos_y": 4
+    },
+    "des": {
+        "pos_x": 2,
+        "pos_y": 3,
+        "orientation": 0
+    },
+    "pieces": 1,
+    "color": 0,
+    "first_turn": false
 }
