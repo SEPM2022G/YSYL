@@ -32,6 +32,14 @@ class IOProcessor:
                 difficulty = initialize['difficulty']
         
         return difficulty
+    
+    def writeWin(self, data, path="output/win.json"):
+        obj = json.dumps(data, indent=4)
+        
+        with open(path, "w") as outfile:
+            outfile.write(obj)
+
+        return 1
 
     def readInput(self, path="input/in.json") -> any:
         with open(path, encoding = 'utf-8') as f:
