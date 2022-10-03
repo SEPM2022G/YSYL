@@ -1,6 +1,7 @@
 from textual.app import App
 from src.board.board import Board
 from src.info.info import Info
+from src.constants import PlayerType
 
 class PrettyGameApp(App):
     async def on_load(self) -> None:
@@ -24,6 +25,7 @@ class PrettyGameApp(App):
         self.info.player_widget.next_turn()
         self.info.player_widget.set_n_white_pieces(16)
         self.info.player_widget.set_n_black_pieces(15)
+        self.info.player_widget.set_player_color(PlayerType.PLAYER1, PlayerType.AI)
         self.reset()
 
     def reset(self):

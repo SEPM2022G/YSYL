@@ -16,6 +16,12 @@ class Turn(Enum):
     BLACK = "Black"
 
 
+class PlayerType(Enum):
+    AI = "AI"
+    PLAYER1 = "Player 1"
+    PLAYER2 = "Player 2"
+
+
 class Piece(Enum):
     BS = "⯊"  # BLACK_STANDING
     WS = "◠"  # WHITE_STANDING
