@@ -7,10 +7,10 @@ from src.GameEngine.Objects.Piece import Piece
 class StateManager:
     def __init__(self, 
                 difficulty_level = "easy",
-                white_pieces_pile = 15, 
-                black_pieces_pile = 15, 
-                board_x = 4,
-                board_y = 4):
+                white_pieces_pile = 21, 
+                black_pieces_pile = 21, 
+                board_x = 5,
+                board_y = 5):
 
         self.white_pieces_pile = white_pieces_pile
         self.black_pieces_pile = black_pieces_pile
@@ -165,7 +165,8 @@ class StateManager:
             if count_row_opposite > row_opposite:
                 row_opposite = count_row_opposite
     
-        return (standing_color-standing_opposite)*4 + (row_color-row_opposite)*10 + (around_color-around_opposite)*2
+        eval = (standing_color-standing_opposite)*4 + (row_color-row_opposite)*10 + (around_color-around_opposite)*2
+        return eval
 
     def _find_top_piece(self, arr):
         '''

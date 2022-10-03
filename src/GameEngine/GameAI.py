@@ -1,7 +1,4 @@
 # This is the game class that can be used to create a new game. Collection of all components in our component diagram
-
-from cmath import pi
-import time
 import random
 from copy import deepcopy
 
@@ -10,59 +7,37 @@ from src.GameEngine.Components.IOProcessor import IOProcessor
 from src.GameEngine.Components.Validator import Validator
 from src.GameEngine.Components.StateManager import StateManager
 from src.GameEngine.Components.MoveController import MoveController
-from src.GameEngine.Objects.Enums import Orientation, Color
+from src.GameEngine.Objects.Enums import Orientation, Color, Difficulty
 from src.GameEngine.Objects.Outcome import Outcome
 
+#Magic
 class GameAI:
-    def __init__(self, difficulty) -> None:
-        self.difficulty = difficulty
+    def __init__(self, state_manager : StateManager, difficulty : Difficulty, ai_color : Color) -> None:
         self.validator = Validator()
-        self.stopGame = False
-        self.fromPile = True
+        self.state_manager = state_manager
+        self.difficulty = difficulty
+        self.color = ai_color
         self.best_move = None
-        self.init_depth = None
+        self.init_depth = 0
     
-# OBS HÅRDKODAD FÖR VIT GLÖM EJ
+    def _easy_move(self, state_manager):
+        moves = self._create_moves_that_player_can_make(state_manager.get_state(), self.color)
+        self.best_move = moves[random.randint(0, len(moves)-1)]
 
-    #Find plave for piece
-    def randMoveEasy(self):
-        piece = self.piece
-        state = self.stateManager.get_state()
-        board = self.stateManager.board
-        #hitta possble places to put piece
-        
-        x = random.randint(0,4)
-        y = random.randint(0,4)
-        orientation = random.randint(0,1)
+    def move(self):
+        print(f"AI {self.difficulty}")
 
-        move = self.create_move(pile=self.fromPile,des_x=x,des_y=y,orientatiton=orientation, color=0, first_turn=False)
-
-        if self.validator.validMove(move):
-            self.stateManager.update_state(self, move)
-
-    #Only used on level easy since it will not be random on other levels.
-    def randPieceEasy(self):
-        if self.difficulty != "easy":
-            pass
-
-        pile = self.StateManager.getWhitePiles
-
-        if pile > 0:
-            self.fromPile = True #med vit från sidan
-        
+        if self.difficulty.value == Difficulty.EASY.value:
+            self._easy_move(self.state_manager)
+        elif self.difficulty.value == Difficulty.MEDIUM.value:
+            self.init_depth = 1
+            self._minimax(self.init_depth, self.color, self.state_manager)
         else:
-            self.fromPile = False
+            self.init_depth = 2
+            self._minimax(self.init_depth, self.color, self.state_manager)
 
-        self.randMoveEasy()
-    
+        return self.best_move
 
-    def start(self):
-        print(f"{self.difficulty} Game Started")
-
-        while (not self.stopGame):
-            print(self.ioProcessor.readInput())
-            print("this is printing from GameAI.py -> start() function")
-            time.sleep(2)
     
     def _create_move(self, pile : bool, src_x : int, src_y : int, des_x : int, des_y : int, 
                 orientatiton : Orientation, pieces : int, color : Color, first_turn : bool):
@@ -154,10 +129,8 @@ class GameAI:
 
         return False
     
-    def minimax(self, depth, color, state_manager, alpha=float("-inf"), beta=float("inf")):   
-        if self.init_depth == None:
-            self.init_depth = depth
-
+    def _minimax(self, depth, color, state_manager, alpha=float("-inf"), beta=float("inf")):   
+        
         state = state_manager.get_state()
 
         if depth == 0 or self._game_over(state["board"]):
@@ -169,15 +142,18 @@ class GameAI:
             for move in valid_moves:
                 state_manager_copy = deepcopy(state_manager)
                 state_manager_copy.update_state(move)
-                eval = self.minimax(depth-1, Color.BLACK, state_manager_copy, alpha, beta)
+                eval = self._minimax(depth-1, Color.BLACK, state_manager_copy, alpha, beta)
                 maxEval = max(maxEval, eval)
 
                 if eval >= maxEval:
                     if depth == self.init_depth:
                         self.best_move = move
+                        print("####MAX#####")
+                        print(move)
+                        print(eval)
 
-                alpha = max(alpha, maxEval)
-                if alpha >= beta:
+                alpha = max(alpha, eval)
+                if beta <= alpha:
                     break
 
             return maxEval
@@ -187,17 +163,21 @@ class GameAI:
             for move in valid_moves:
                 state_manager_copy = deepcopy(state_manager)
                 state_manager_copy.update_state(move)
-                eval = self.minimax(depth-1, Color.WHITE, state_manager_copy, alpha, beta)
+                eval = self._minimax(depth-1, Color.WHITE, state_manager_copy, alpha, beta)
                 minEval = min(minEval, eval)
 
                 if eval <= minEval:
                     if depth == self.init_depth:
+                        print("####MIN#####")
+                        print(move)
+                        print(eval)
                         self.best_move = move
                 
-                beta = min(beta, minEval)
+                beta = min(beta, eval)
                 if beta <= alpha:
                     break
 
             return minEval
+    
 
 

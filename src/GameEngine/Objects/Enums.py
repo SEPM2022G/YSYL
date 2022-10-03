@@ -7,3 +7,8 @@ class Orientation(Enum):
 class Color(Enum):
     WHITE = 0
     BLACK = 1
+
+class Difficulty(Enum):
+    EASY = 0
+    MEDIUM = 1
+    HARD = 2
