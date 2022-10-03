@@ -78,11 +78,14 @@ class Validator:
         '''
         Checks for a win
         '''
+        x_size = board.shape[0]
+        y_size = board.shape[1]
 
-        for y in range(0, board.shape[0]):
-
+        for y in range(0, y_size):
             has_turned = False
-            for x in range(1, board.shape[1]):
+            
+            for x in range(1, x_size):
+
                 next_elem = self._find_top(board[x][y])
                 prev_elem = self._find_top(board[x - 1][y])
 
@@ -91,18 +94,13 @@ class Validator:
                     has_turned = True
                     path_check = Outcome.CONT
 
-                    if y > 0:
-                        prev_down = self._find_top(board[x-1][y-1])
-                        if prev_elem == prev_down:
-                            path_check = self._check_path(x, y-1, board)
+                    if y > 0 and prev_elem == self._find_top(board[x-1][y-1]):
+                        path_check = self._check_path(x, y-1, board)
+                        if path_check != Outcome.CONT: return path_check
 
-                    if y < board.shape[1]-1:
-                        prev_top = self._find_top(board[x-1][y+1])
-                        if prev_elem == prev_top:
-                            path_check = self._check_path(x, y+1, board)
-
-                    if path_check != Outcome.CONT:
-                        return path_check
+                    if y < y_size - 1 and prev_elem == self._find_top(board[x-1][y+1]):
+                        path_check = self._check_path(x, y+1, board)
+                        if path_check != Outcome.CONT: return path_check
 
                 if next_elem != prev_elem or prev_elem == -1:
                     break
@@ -115,7 +113,8 @@ class Validator:
         '''
         Helper function for checking outcomes in straight paths
         '''
-        for i in range(x, board.shape[1]):
+        x_size = board.shape[0]
+        for i in range(x, x_size):
             next_elem = self._find_top(board[x][y])
             prev_elem = self._find_top(board[x - 1][y])
 

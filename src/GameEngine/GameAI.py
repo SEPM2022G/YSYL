@@ -179,5 +179,3 @@ class GameAI:
 
             return minEval
     
-
-

@@ -3,5 +3,5 @@
 from GameEngine.GameAI import GameAI
 
 
-YSYL = GameAI("easy")
+YSYL = GameAI()
 YSYL.start()
