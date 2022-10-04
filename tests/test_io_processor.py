@@ -3,15 +3,11 @@ from src.GameEngine.Objects.Enums import Color, Orientation
 from src.GameEngine.Components.IOProcessor import IOProcessor
 
 
-IOP = IOProcessor()
+IOP = IOProcessor(os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "src", "input", "in.json"), os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "src", "output", "out.json"))
 
 # Init
 def test_init():
     pass
-
-def test_read_diff_from_file():
-    result = IOP.readDifficulty(False)
-    assert (result == 1)
 
 def test_write_to_file():
     move = {
