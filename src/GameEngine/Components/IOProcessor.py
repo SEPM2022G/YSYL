@@ -1,17 +1,20 @@
 # This class represents the 'IOProcessor' component in our component diagram
 
+import os
 import json
 
 
 class IOProcessor:
-    def __init__(self) -> None:
+    def __init__(self, read_path, write_path) -> None:
+        self.write_path = write_path
+        self.read_path = read_path
         pass
 
-    def loadConfig(self, path="config.json"):
-        with open(path, encoding='utf-8') as conf:
+    def loadConfig(self):
+        with open(self.conf_path, encoding='utf-8') as conf:
             return json.load(conf)
 
-    def readDifficulty(self, readFromConsole, path="config.json"):
+    def readDifficulty(self, readFromConsole):
         difficulty = -1
         # it is configurable to read difficulty from a file or read from console
         if (readFromConsole):
@@ -27,7 +30,7 @@ class IOProcessor:
                 except:
                     print("Invalid input for difficulty")
         else:
-            conf = self.loadConfig(path)
+            conf = self.loadConfig()
             try:
                 difficulty = conf['difficulty']
             except:
@@ -35,16 +38,16 @@ class IOProcessor:
 
         return difficulty
 
-    def readInput(self, path="input/in.json"):
-        with open(path, encoding='utf-8') as f:
+    def readInput(self):
+        with open(self.read_path, encoding='utf-8') as f:
             obj = json.load(f)
 
         return obj
 
-    def writeOutput(self, data, path="output/out.json"):
+    def writeOutput(self, data):
         obj = json.dumps(data, indent=4)
 
-        with open(path, "w") as outfile:
+        with open(self.write_path, "w") as outfile:
             outfile.write(obj)
 
         return 1
