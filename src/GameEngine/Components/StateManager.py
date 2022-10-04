@@ -28,6 +28,12 @@ class StateManager:
 
         return state
 
+    def set_state(self, state):
+        self.white_pieces_pile = state['white_pieces_pile']
+        self.black_pieces_pile = state['black_pieces_pile']
+        self.board = state['board']
+
+
     def update_state(self, move):
         src_x = move["src"]["pos_x"]
         src_y = move["src"]["pos_y"]
