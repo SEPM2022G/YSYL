@@ -10,10 +10,10 @@ def test_init():
     pass
 
 def test_read_diff_from_file():
-    result = IOP.readDifficulty(False, os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "src", "input", "init.json"))
+    result = IOP.readDifficulty(False, os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "src", "config.json"))
     assert (result == 1)
 
-def test_wite_to_file():
+def test_write_to_file():
     move = {
             "src": {
                 "pile": True,
