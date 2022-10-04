@@ -17,6 +17,7 @@ class StateManager:
         self.board = np.zeros(shape=(board_x, board_y, white_pieces_pile+black_pieces_pile),  dtype=object)
     
     def print_state(self):
+        print()
         print("White pieces in pile: ", self.white_pieces_pile)
         print("Black pieces in pile: ", self.black_pieces_pile)
 
@@ -34,6 +35,7 @@ class StateManager:
             print("|")
 
         print("------------------------------------------------------------------------------")
+        print()
 
     def get_state(self):
         state = {
@@ -109,7 +111,7 @@ class StateManager:
 
         return self.get_state()
     
-    def board_evaluation(self, color):
+    def board_evaluation(self, color, depth):
         standing_color = 0
         standing_opposite = 0
 
@@ -140,7 +142,7 @@ class StateManager:
                         count_row_opposite += 1
 
                     #Around color
-                    if y-1 > 0:
+                    if (y-1) > 0:
                         piece = self._find_top_piece(self.board[x][y-1])
                         if piece != 0:
                             if piece.get_color().value == color.value:
@@ -149,7 +151,7 @@ class StateManager:
                                 around_opposite += 1
                         
                     #Around color
-                    if y+1 < self.board.shape[1]:
+                    if (y+1) < self.board.shape[1]:
                         piece = self._find_top_piece(self.board[x][y+1])
                         if piece != 0:
                             if piece.get_color().value == color.value:
@@ -165,8 +167,7 @@ class StateManager:
             if count_row_opposite > row_opposite:
                 row_opposite = count_row_opposite
     
-        eval = (standing_color-standing_opposite)*4 + (row_color-row_opposite)*10 + (around_color-around_opposite)*2
-        return eval
+        return (standing_opposite-standing_color)*4 + (row_opposite-row_color)*10 + (around_opposite-around_color)*2 + (depth*15) 
 
     def _find_top_piece(self, arr):
         '''

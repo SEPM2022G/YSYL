@@ -17,12 +17,13 @@ class GameAI:
         self.state_manager = state_manager
         self.difficulty = difficulty
         self.color = ai_color
-        self.best_move = None
+        self.best_moves = []
         self.init_depth = 0
+        self.medium_hard_move = False
     
     def _easy_move(self, state_manager):
         moves = self._create_moves_that_player_can_make(state_manager.get_state(), self.color)
-        self.best_move = moves[random.randint(0, len(moves)-1)]
+        self.best_moves.append((moves[random.randint(0, len(moves)-1)], 0))
 
     def move(self):
         print(f"AI {self.difficulty}")
@@ -30,13 +31,22 @@ class GameAI:
         if self.difficulty.value == Difficulty.EASY.value:
             self._easy_move(self.state_manager)
         elif self.difficulty.value == Difficulty.MEDIUM.value:
-            self.init_depth = 1
-            self._minimax(self.init_depth, self.color, self.state_manager)
+            self.init_depth = 4
+            if self.medium_hard_move:
+                self._minimax(self.init_depth, self.color, self.state_manager)
+                self.medium_hard_move = False 
+            else:
+                self._easy_move(self.state_manager)
+                self.medium_hard_move = True
         else:
-            self.init_depth = 2
+            self.init_depth = 4
             self._minimax(self.init_depth, self.color, self.state_manager)
 
-        return self.best_move
+        best_move = self.best_moves[random.randint(0, len(self.best_moves))-1][0]
+        #remove the best moves from previous turn
+        self.best_moves = []
+
+        return best_move
 
     
     def _create_move(self, pile : bool, src_x : int, src_y : int, des_x : int, des_y : int, 
@@ -124,17 +134,21 @@ class GameAI:
 
     def _game_over(self, board):
         o = self.validator._win_check(board)
-        if o == Outcome.WIN_BLACK or o == Outcome.WIN_WHITE:
-            return True
+        if o == Outcome.WIN_BLACK:
+            return True, -1
+        elif o == Outcome.WIN_WHITE:
+            return True, 1 
 
-        return False
+        return False, 0
     
     def _minimax(self, depth, color, state_manager, alpha=float("-inf"), beta=float("inf")):   
         
         state = state_manager.get_state()
 
-        if depth == 0 or self._game_over(state["board"]):
-            return state_manager.board_evaluation(color)
+        game_over, who_won = self._game_over(state["board"])
+
+        if depth == 0 or game_over:
+            return state_manager.board_evaluation(color, who_won*depth)
         
         if color.value == Color.WHITE.value: 
             valid_moves = self._create_moves_that_player_can_make(state, Color.WHITE)
@@ -147,10 +161,14 @@ class GameAI:
 
                 if eval >= maxEval:
                     if depth == self.init_depth:
-                        self.best_move = move
-                        print("####MAX#####")
-                        print(move)
-                        print(eval)
+                        #best_moves has always the same eval score inside it
+                        if self.best_moves:
+                            if eval > self.best_moves[0][1]: 
+                                self.best_moves = []
+
+                        self.best_moves.append((move, eval))
+                        #print("####MAX#####")
+                        #print(self.best_moves)
 
                 alpha = max(alpha, eval)
                 if beta <= alpha:
@@ -168,10 +186,13 @@ class GameAI:
 
                 if eval <= minEval:
                     if depth == self.init_depth:
-                        print("####MIN#####")
-                        print(move)
-                        print(eval)
-                        self.best_move = move
+                        if self.best_moves:
+                            if eval > self.best_moves[0][1]: 
+                                self.best_moves = []
+
+                        self.best_moves.append((move, eval))
+                        #print("####MIN#####")
+                        #print(self.best_moves)
                 
                 beta = min(beta, eval)
                 if beta <= alpha:
@@ -179,5 +200,3 @@ class GameAI:
 
             return minEval
     
-
-

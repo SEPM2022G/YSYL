@@ -1,7 +1,11 @@
 # This file will act as main entry point to the game
+import sys
+from src.GameEngine.GameAI import GameAI
+from src.GameEngine.Objects.Enums import Difficulty, Color, Orientation
+from src.GameEngine.Components.StateManager import StateManager
 
-from GameEngine.GameAI import GameAI
+def main():
+    pass
 
-
-YSYL = GameAI("easy")
-YSYL.start()
+if __name__ == '__main__':
+    main()
