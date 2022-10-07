@@ -1,6 +1,6 @@
 # This class represents the 'Controller' component in our component diagram
 
-from GameEngine.Components.IOProcessor import IOProcessor
+from src.GameEngine.Components.IOProcessor import IOProcessor
 
 
 class Controller:
