@@ -2,11 +2,8 @@
 import random
 from copy import deepcopy
 
-from src.GameEngine.Components.Controller import Controller
-from src.GameEngine.Components.IOProcessor import IOProcessor
 from src.GameEngine.Components.Validator import Validator
 from src.GameEngine.Components.StateManager import StateManager
-from src.GameEngine.Components.MoveController import MoveController
 from src.GameEngine.Objects.Enums import Orientation, Color, Difficulty
 from src.GameEngine.Objects.Outcome import Outcome
 
