@@ -5,10 +5,10 @@ import json
 
 
 class IOProcessor:
-    def __init__(self, read_path, write_path) -> None:
+    def __init__(self, read_path, write_path, config_path = '' ) -> None:
         self.write_path = write_path
         self.read_path = read_path
-        pass
+        self.conf_path = config_path
 
     def loadConfig(self):
         with open(self.conf_path, encoding='utf-8') as conf:
