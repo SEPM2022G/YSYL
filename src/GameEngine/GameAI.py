@@ -82,10 +82,16 @@ class Event(FileSystemEventHandler):
 
         if outcome == Outcome.INVALID:
             sm.set_state(old_state)
+
         elif outcome == Outcome.VALID:
             new_move = mc.move()
+
             sm.update_state(new_move)
             output['move'] = new_move
+
+            ai_outcome = val._win_check(sm.get_state()['board'])
+            if ai_outcome != Outcome.CONT: output['outcome'] = ai_outcome.value
+
         else: 
             sm.__init__()
 
