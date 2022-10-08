@@ -2,6 +2,7 @@
 import sys
 import time
 import getopt
+import uuid
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -50,8 +51,6 @@ io = IOProcessor(input_path, output_path, config_path)
 val = Validator()
 sm = StateManager()
 mc = MoveController(sm, difficulty, ai_color)
-move_counter = 0
-
 
 class Event(FileSystemEventHandler):
     def dispatch(self, event):
@@ -63,7 +62,7 @@ class Event(FileSystemEventHandler):
             print("Invalid Json in ", input_path)
             return
 
-        move_counter = move_counter + 1
+        move_id = uuid.uuid4()
 
         if len(config_path) > 0:
             mc.set_difficulty(Difficulty(io.readDifficulty(False)))
@@ -72,13 +71,12 @@ class Event(FileSystemEventHandler):
         new_state = sm.update_state(move)
 
         outcome = val.check(move, old_state, new_state)
-        output = { 'outcome': outcome , 'move_counter': move_counter }
+        output = { 'outcome': outcome , 'id': str(move_id) }
         # revert state
         if outcome == Outcome.INVALID:
             sm.set_state(old_state)
         # Reset the Game
         elif outcome != Outcome.CONT:
-            move_counter = 0
             sm.__init__()
         # Play a move
         else:
@@ -86,6 +84,7 @@ class Event(FileSystemEventHandler):
             sm.update_state(new_move)
             output['move'] = new_move
 
+        sm.print_state()
         io.writeOutput(output)
 
 
