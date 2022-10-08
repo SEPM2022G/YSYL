@@ -3,6 +3,7 @@ import sys
 import time
 import getopt
 import uuid
+import copy
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -33,8 +34,8 @@ ai_color = Color.BLACK
 config_path = ''
 
 for opt in opts:
-    if opt[0] == '--diff' and opt[1] < 4 and opt[1] > 0:
-        difficulty = Difficulty(opt[1])
+    if opt[0] == '--diff' and int(opt[1]) < 4 and int(opt[1]) > 0:
+        difficulty = Difficulty(int(opt[1]) - 1)
     if opt[0] == '--color':
         if opt[1] == 'black':
             ai_color = Color.BLACK
@@ -58,34 +59,43 @@ class Event(FileSystemEventHandler):
             return
         try:
             move = io.readInput()
-        except:
-            print("Invalid Json in ", input_path)
+        except Exception as e:
+            print(e)
             return
 
         move_id = uuid.uuid4()
 
         if len(config_path) > 0:
+            print('Reading diff from config')
             mc.set_difficulty(Difficulty(io.readDifficulty(False)))
 
-        old_state = sm.get_state()
+        old_state = copy.deepcopy(sm.get_state())
         new_state = sm.update_state(move)
 
         outcome = val.check(move, old_state, new_state)
-        output = { 'outcome': outcome , 'id': str(move_id) }
-        # revert state
+        output = { 'outcome': outcome.value , 'id': str(move_id) }
+
+        print('---------------INPUT MOVE-------------------')
+        print('Player move:', move)
+        print('Outcome: ', outcome)
+        sm.print_state()
+
         if outcome == Outcome.INVALID:
             sm.set_state(old_state)
-        # Reset the Game
-        elif outcome != Outcome.CONT:
-            sm.__init__()
-        # Play a move
-        else:
+        elif outcome == Outcome.VALID:
             new_move = mc.move()
             sm.update_state(new_move)
             output['move'] = new_move
+        else: 
+            sm.__init__()
 
+        print('\n---------------OUTPUT MOVE-------------------\n')
         sm.print_state()
+        print(output)
+        print('\n##########################################\n')
+
         io.writeOutput(output)
+        return
 
 
 def main():

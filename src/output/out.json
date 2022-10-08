@@ -1,15 +1,19 @@
 {
-    "src": {
-        "pile": true,
-        "pos_x": 5,
-        "pos_y": 4
-    },
-    "des": {
-        "pos_x": 2,
-        "pos_y": 3,
-        "orientation": 0
-    },
-    "pieces": 1,
-    "color": 0,
-    "first_turn": false
+    "outcome": 1,
+    "id": "09f1b621-7b60-4696-865f-9f4fa119a1e6",
+    "move": {
+        "src": {
+            "pile": true,
+            "pos_x": 0,
+            "pos_y": 0
+        },
+        "des": {
+            "pos_x": 3,
+            "pos_y": 2,
+            "orientation": 1
+        },
+        "pieces": 1,
+        "color": 1,
+        "first_turn": false
+    }
 }

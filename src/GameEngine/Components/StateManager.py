@@ -64,8 +64,8 @@ class StateManager:
         des_x = move["des"]["pos_x"]
         des_y = move["des"]["pos_y"]
 
-        color = move["color"]
-        ori = move["des"]["orientation"]
+        color = Color(move["color"])
+        ori = Orientation(move["des"]["orientation"])
 
         des_z = self.board[des_x][des_y]
 

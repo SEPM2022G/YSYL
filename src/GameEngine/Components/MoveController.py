@@ -60,10 +60,10 @@ class MoveController:
             "des": {
                 "pos_x": des_x,
                 "pos_y": des_y,
-                "orientation": orientatiton
+                "orientation": orientatiton.value
             },
             "pieces": pieces,
-            "color": color,
+            "color": color.value,
             "first_turn": first_turn
         }
         return move
