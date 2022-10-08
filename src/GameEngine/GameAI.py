@@ -14,15 +14,15 @@ from src.GameEngine.Objects.Enums import Color, Difficulty
 
 # Read inputs
 argv = sys.argv[1:]
-opts, args = getopt.getopt(argv, 'd:')
+opts, args = getopt.getopt(argv, '', ['diff=', 'color=', 'config='])
 
 if len(args) != 2:
     print(
         'Usage: python -m src.GameEngine.GameAI [OPTION] [INPUT FILE] [OUTPUT FILE]')
     print('Options: ')
-    print('     --diff : a difficulty level from 1 to 3')
-    print('     --color : the color for the AI (black or white)')
-    print('     --config : the file path to a config')
+    print('     --diff= : a difficulty level from 1 to 3')
+    print('     --color= : the color for the AI (black or white)')
+    print('     --config= : the file path to a config')
     exit(1)
 
 input_path = args[0]
@@ -50,6 +50,7 @@ io = IOProcessor(input_path, output_path, config_path)
 val = Validator()
 sm = StateManager()
 mc = MoveController(sm, difficulty, ai_color)
+move_counter = 0
 
 
 class Event(FileSystemEventHandler):
@@ -62,6 +63,8 @@ class Event(FileSystemEventHandler):
             print("Invalid Json in ", input_path)
             return
 
+        move_counter = move_counter + 1
+
         if len(config_path) > 0:
             mc.set_difficulty(Difficulty(io.readDifficulty(False)))
 
@@ -69,12 +72,13 @@ class Event(FileSystemEventHandler):
         new_state = sm.update_state(move)
 
         outcome = val.check(move, old_state, new_state)
-        output = { 'outcome': outcome }
+        output = { 'outcome': outcome , 'move_counter': move_counter }
         # revert state
         if outcome == Outcome.INVALID:
             sm.set_state(old_state)
         # Reset the Game
         elif outcome != Outcome.CONT:
+            move_counter = 0
             sm.__init__()
         # Play a move
         else:
