@@ -1,12 +1,12 @@
 from src.GameEngine.Components.StateManager import StateManager
-from src.GameEngine.GameAI import GameAI
+from src.GameEngine.Components.MoveController import MoveController
 from src.GameEngine.Objects.Enums import Color, Orientation, Difficulty
 import sys
 
 #def easy_test_integration():
 print("#AI EASY TESTTT######################################################")
 sm = StateManager()
-ai = GameAI(sm, Difficulty.EASY, Color.WHITE)
+ai = MoveController(sm, Difficulty.EASY, Color.WHITE)
 
 move = {
     "src": {
@@ -42,7 +42,7 @@ sm.print_state()
 print()
 print("#AI MEDIUM TESTTT######################################################")
 sm = StateManager()
-ai = GameAI(sm, Difficulty.MEDIUM, Color.WHITE)
+ai = MoveController(sm, Difficulty.MEDIUM, Color.WHITE)
 
 move = {
     "src": {
@@ -96,7 +96,7 @@ move = {
 }
 
 sm = StateManager()
-ai = GameAI(sm, Difficulty.HARD, Color.WHITE)
+ai = MoveController(sm, Difficulty.HARD, Color.WHITE)
 
 move["des"]["pos_x"] = 0
 sm.update_state(move)
@@ -116,7 +116,7 @@ sm.print_state()
 print()
 print("#AI BEST MOVE HARD TESTTT######################################################")
 sm = StateManager()
-ai = GameAI(sm, Difficulty.HARD, Color.WHITE)
+ai = MoveController(sm, Difficulty.HARD, Color.WHITE)
 
 move["des"]["pos_x"] = 0
 sm.update_state(move)
