@@ -22,9 +22,9 @@ if len(args) != 2:
     print(
         'Usage: python -m src.GameEngine.GameAI [OPTION] [INPUT FILE] [OUTPUT FILE]')
     print('Options: ')
-    print('     --diff= : a difficulty level from 1 to 3')
-    print('     --color= : the color for the AI (black or white)')
-    print('     --config= : the file path to a config')
+    print('     --diff : a difficulty level from 1 to 3')
+    print('     --color : the color for the AI (black or white)')
+    print('     --config : the file path to a config')
     exit(1)
 
 input_path = args[0]
