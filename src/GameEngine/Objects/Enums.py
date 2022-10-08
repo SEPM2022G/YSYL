@@ -7,3 +7,8 @@ class Orientation(int, Enum):
 class Color(int, Enum):
     WHITE = 0
     BLACK = 1
+
+class Difficulty(Enum):
+    EASY = 0
+    MEDIUM = 1
+    HARD = 2
