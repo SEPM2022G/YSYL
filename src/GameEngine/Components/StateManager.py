@@ -6,7 +6,6 @@ from src.GameEngine.Objects.Piece import Piece
 
 class StateManager:
     def __init__(self, 
-                difficulty_level = "easy",
                 white_pieces_pile = 21, 
                 black_pieces_pile = 21, 
                 board_x = 5,
@@ -189,5 +188,3 @@ class StateManager:
         
         return arr[arr.shape[0]-1]
 
-
-  

@@ -10,7 +10,7 @@ from src.GameEngine.Components.MoveController import MoveController
 from src.GameEngine.Components.StateManager import StateManager
 from src.GameEngine.Components.Validator import Validator
 from src.GameEngine.Objects.Outcome import Outcome
-from src.GameEngine.Objects.Enums import Color
+from src.GameEngine.Objects.Enums import Color, Difficulty
 
 # Read inputs
 argv = sys.argv[1:]
@@ -20,19 +20,21 @@ if len(args) != 2:
     print(
         'Usage: python -m src.GameEngine.GameAI [OPTION] [INPUT FILE] [OUTPUT FILE]')
     print('Options: ')
-    print('     -d : a difficulty level from 1 to 3')
-    print('     -c : the color for the AI (black or white)')
+    print('     --diff : a difficulty level from 1 to 3')
+    print('     --color : the color for the AI (black or white)')
+    print('     --config : the file path to a config')
     exit(1)
 
 input_path = args[0]
 output_path = args[1]
-difficulty = 1
+difficulty = Difficulty.MEDIUM
 ai_color = Color.BLACK
+config_path = ''
 
 for opt in opts:
-    if opt[0] == '-d':
-        difficulty = opt[1]
-    if opt[0] == '-c':
+    if opt[0] == '--diff' and opt[1] < 4 and opt[1] > 0:
+        difficulty = Difficulty(opt[1])
+    if opt[0] == '--color':
         if opt[1] == 'black':
             ai_color = Color.BLACK
         elif opt[1] == 'white':
@@ -40,12 +42,14 @@ for opt in opts:
         else:
             print('invalid color')
             exit(1)
+    if opt[0] == '--config':
+        config_path = opt[1]
 
 
-io = IOProcessor(input_path, output_path)
+io = IOProcessor(input_path, output_path, config_path)
 val = Validator()
-sm = StateManager(difficulty)
-mc = MoveController()
+sm = StateManager()
+mc = MoveController(sm, difficulty, ai_color)
 
 
 class Event(FileSystemEventHandler):
@@ -58,11 +62,14 @@ class Event(FileSystemEventHandler):
             print("Invalid Json in ", input_path)
             return
 
+        if len(config_path) > 0:
+            mc.set_difficulty(Difficulty(io.readDifficulty(False)))
+
         old_state = sm.get_state()
         new_state = sm.update_state(move)
 
         outcome = val.check(move, old_state, new_state)
-        new_move = {'outcome': outcome}
+        output = { 'outcome': outcome }
         # revert state
         if outcome == Outcome.INVALID:
             sm.set_state(old_state)
@@ -71,11 +78,11 @@ class Event(FileSystemEventHandler):
             sm.__init__()
         # Play a move
         else:
-            new_move = mc.MoveController(sm, difficulty, ai_color)
+            new_move = mc.move()
             sm.update_state(new_move)
-            new_move['outcome'] = outcome
+            output['move'] = new_move
 
-        io.writeOutput(new_move)
+        io.writeOutput(output)
 
 
 def main():
