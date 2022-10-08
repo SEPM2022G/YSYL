@@ -34,7 +34,7 @@ class IOProcessor:
             try:
                 difficulty = conf['difficulty']
             except:
-                print("No difficulty in ", config_path)
+                print("No difficulty in ", self.config_path)
 
         return difficulty
 
