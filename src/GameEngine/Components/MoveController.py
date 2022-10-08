@@ -18,7 +18,7 @@ class MoveController:
         self.init_depth = 0
         self.medium_hard_move = False
 
-    def set_difficulty(difficulty : Difficulty):
+    def set_difficulty(self, difficulty : Difficulty):
         self.difficulty = difficulty
     
     def _easy_move(self, state_manager):
