@@ -6,4 +6,4 @@ dependencies:
   - flake8
   - pytest
   - numpy
-  
+  - watchdog

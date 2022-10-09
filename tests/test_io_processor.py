@@ -3,17 +3,13 @@ from src.GameEngine.Objects.Enums import Color, Orientation
 from src.GameEngine.Components.IOProcessor import IOProcessor
 
 
-IOP = IOProcessor()
+IOP = IOProcessor(os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "src", "input", "in.json"), os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "src", "output", "out.json"))
 
 # Init
 def test_init():
     pass
 
-def test_read_diff_from_file():
-    result = IOP.readDifficulty(False, os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "src", "input", "init.json"))
-    assert (result == 1)
-
-def test_wite_to_file():
+def test_write_to_file():
     move = {
             "src": {
                 "pile": True,
@@ -30,9 +26,9 @@ def test_wite_to_file():
             "first_turn": False
             }
     
-    result = IOP.writeOutput(move, os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "src", "output", "out.json"))
+    result = IOP.writeOutput(move)
     assert (result == 1)
 
 def test_read_from_file():
-    result = IOP.readInput(os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "src", "input", "in.json"))
+    result = IOP.readInput()
     assert (type(result) is dict)

@@ -17,6 +17,9 @@ class MoveController:
         self.best_moves = []
         self.init_depth = 0
         self.medium_hard_move = False
+
+    def set_difficulty(self, difficulty : Difficulty):
+        self.difficulty = difficulty
     
     def _easy_move(self, state_manager):
         moves = self._create_moves_that_player_can_make(state_manager.get_state(), self.color)
@@ -57,10 +60,10 @@ class MoveController:
             "des": {
                 "pos_x": des_x,
                 "pos_y": des_y,
-                "orientation": orientatiton
+                "orientation": orientatiton.value
             },
             "pieces": pieces,
-            "color": color,
+            "color": color.value,
             "first_turn": first_turn
         }
         return move

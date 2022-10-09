@@ -1,20 +1,23 @@
 # This class represents the 'IOProcessor' component in our component diagram
 
+import os
 import json
 
-class IOProcessor:
-    def __init__(self) -> None:
-        pass
 
-    def loadConfig(self, path="conf.json"):
-        with open("config.json", encoding = 'utf-8') as conf:
+class IOProcessor:
+    def __init__(self, read_path, write_path, config_path = '' ) -> None:
+        self.write_path = write_path
+        self.read_path = read_path
+        self.conf_path = config_path
+
+    def loadConfig(self):
+        with open(self.conf_path, encoding='utf-8') as conf:
             return json.load(conf)
 
-    def readDifficulty(self, readFromConsole, path="input/init.json"):
+    def readDifficulty(self, readFromConsole):
         difficulty = -1
-        # print(os.path.join(os.path.dirname(os.path.abspath(".gitignore")), "input", "init.json"))
         # it is configurable to read difficulty from a file or read from console
-        if ( readFromConsole ) :
+        if (readFromConsole):
             print("1 -> Easy")
             print("2 -> Medium")
             print("3 -> Hard")
@@ -27,23 +30,24 @@ class IOProcessor:
                 except:
                     print("Invalid input for difficulty")
         else:
-            with open(path, encoding = 'utf-8') as init:
-                initialize = json.load(init)
-                difficulty = initialize['difficulty']
-        
+            conf = self.loadConfig()
+            try:
+                difficulty = conf['difficulty']
+            except:
+                print("No difficulty in ", self.config_path)
+
         return difficulty
 
-    def readInput(self, path="input/in.json"):
-        with open(path, encoding = 'utf-8') as f:
+    def readInput(self):
+        with open(self.read_path, encoding='utf-8') as f:
             obj = json.load(f)
 
         return obj
 
-    def writeOutput(self, data, path="output/out.json"):
+    def writeOutput(self, data):
         obj = json.dumps(data, indent=4)
-        
-        with open(path, "w") as outfile:
+
+        with open(self.write_path, "w") as outfile:
             outfile.write(obj)
 
         return 1
-

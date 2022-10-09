@@ -6,7 +6,6 @@ from src.GameEngine.Objects.Piece import Piece
 
 class StateManager:
     def __init__(self, 
-                difficulty_level = "easy",
                 white_pieces_pile = 21, 
                 black_pieces_pile = 21, 
                 board_x = 5,
@@ -46,6 +45,12 @@ class StateManager:
 
         return state
 
+    def set_state(self, state):
+        self.white_pieces_pile = state['white_pieces_pile']
+        self.black_pieces_pile = state['black_pieces_pile']
+        self.board = state['board']
+
+
     def getWhitePiles(self):
         return self.white_pieces_pile
     
@@ -59,8 +64,8 @@ class StateManager:
         des_x = move["des"]["pos_x"]
         des_y = move["des"]["pos_y"]
 
-        color = move["color"]
-        ori = move["des"]["orientation"]
+        color = Color(move["color"])
+        ori = Orientation(move["des"]["orientation"])
 
         des_z = self.board[des_x][des_y]
 
@@ -183,5 +188,3 @@ class StateManager:
         
         return arr[arr.shape[0]-1]
 
-
-  

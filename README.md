@@ -78,7 +78,80 @@ problems?
 Here are some more detailed checks: 
 [PR checklist](https://devchecklists.com/pull-requests-checklist/)
 
-# Format of the board
+## Using the AI
+The AI is run in a separate process in order to not block the UI.
+```
+Usage: python -m src.GameEngine.GameAI [OPTION] [INPUT FILE] [OUTPUT FILE]
+Options:
+	--diff= : a difficulty level from 1 to 3
+	--color= : the color for the AI (black or white)
+	--config= : the file path to a config
+```
+
+Write a move to the input file and the AI will return the following in the
+output:
+* Outcome from input move as a number 
+	* 0 = invalid move
+	* 1 = valid move
+	* 2 = White wins
+	* 3 = Black wins
+* Id, an unique identifier for each move to help avoid reading duplicates
+* The move, see below for an example
+
+```
+{
+    "outcome": 1,
+    "id": "09f1b621-7b60-4696-865f-9f4fa119a1e6",
+    "move": {...}
+}
+```
+
+
+### Format of a move 
+
+* Source
+    * Is it from the pile?
+    * Position
+* Destination
+    * Position
+    * Orientation of the piece at the top as a number (0 = flat | 1 = standing)
+* The amount of pieces
+* Color of the player as a number (0 = white | 1 = black)
+* Is it the first turn in the game?
+
+### Example of a move input
+```
+{
+    "src": {
+        "pile": true,
+        "pos_x": 0,
+        "pos_y": 0,
+    },
+    "des": {
+        "pos_x": 0,
+        "pos_y": 0,
+        "orientation": 0
+    },
+    "pieces": 1,
+    "color": 0,
+    "first_turn": false
+}
+```
+
+### Config
+A path to a config can be passed as an argument which will overwrite any inputed
+options, the config can be used to change any values after the game is started
+by changing the corresponding fields.
+
+Currently there is the following options:
+
+```
+{
+	difficulty: 1
+}
+```
+
+### Format of the board
 ```
 [[[0 0 0 ... 0 0 0]
   [0 0 0 ... 0 0 0]
@@ -113,34 +186,3 @@ Here are some more detailed checks:
 shape(x = 5, y = 5, z = 42)
 
 The maximum pieces in a stack is 42
-```
-# Format of a move 
-
-* Source
-    * Is it from the Pile
-    * Position
-* Destination
-    * Position
-    * Orientation of the piece at the top
-* The amount of pieces
-* Color of the player
-* Is it the first turn in the game
-
-### Example of a move
-```
-move = {
-    "src": {
-        "pile": True,
-        "pos_x": 0,
-        "pos_y": 0,
-    },
-    "des": {
-        "pos_x": 0,
-        "pos_y": 0,
-        "orientation": Orientation.FLAT
-    },
-    "pieces": 1,
-    "color": Color.WHITE,
-    "first_turn": False
-}
-```
