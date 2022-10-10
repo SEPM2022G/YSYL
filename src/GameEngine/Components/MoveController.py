@@ -31,7 +31,7 @@ class MoveController:
         if self.difficulty.value == Difficulty.EASY.value:
             self._easy_move(self.state_manager)
         elif self.difficulty.value == Difficulty.MEDIUM.value:
-            self.init_depth = 3
+            self.init_depth = 4
             if self.medium_hard_move:
                 self._minimax(self.init_depth, self.color, self.state_manager)
                 self.medium_hard_move = False 
@@ -39,7 +39,7 @@ class MoveController:
                 self._easy_move(self.state_manager)
                 self.medium_hard_move = True
         else:
-            self.init_depth = 3
+            self.init_depth = 4
             self._minimax(self.init_depth, self.color, self.state_manager)
 
         best_move = self.best_moves[random.randint(0, len(self.best_moves))-1][0]
@@ -88,7 +88,6 @@ class MoveController:
     
     def _create_moves_that_player_can_make(self, state, color):        
         valid_moves = []
-        print("hej")
         #All the possible moves when taken from the pile
         for des_x in range(0, state["board"].shape[0]):
             for des_y in range(0, state["board"].shape[1]):
@@ -134,7 +133,6 @@ class MoveController:
 
     def _game_over(self, board):
         o = self.validator._win_check(board)
-        print(o)
         if o == Outcome.WIN_BLACK:
             return True, -1
         elif o == Outcome.WIN_WHITE:
@@ -162,10 +160,10 @@ class MoveController:
                 maxEval = max(maxEval, eval)
 
                 if eval >= maxEval:
-                    print("Score:", eval)
-                    print("Move:", move)
                     if depth == self.init_depth:
-                        
+                        #print("Score: ",eval)
+                        #print("Move",move)
+
                         #best_moves has always the same eval score inside it
                         if self.best_moves:
                             if eval > self.best_moves[0][1]: 
