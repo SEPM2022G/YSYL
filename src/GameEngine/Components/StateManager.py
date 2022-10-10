@@ -172,7 +172,7 @@ class StateManager:
             if count_row_opposite > row_opposite:
                 row_opposite = count_row_opposite
     
-        return (standing_opposite-standing_color)*4 + (row_opposite-row_color)*10 + (around_opposite-around_color)*2 + (depth*15) 
+        return (standing_opposite-standing_color)*6 + (row_opposite-row_color)*8 + (around_opposite-around_color)*2 + (depth*15) 
 
     def _find_top_piece(self, arr):
         '''

@@ -31,7 +31,7 @@ class MoveController:
         if self.difficulty.value == Difficulty.EASY.value:
             self._easy_move(self.state_manager)
         elif self.difficulty.value == Difficulty.MEDIUM.value:
-            self.init_depth = 4
+            self.init_depth = 3
             if self.medium_hard_move:
                 self._minimax(self.init_depth, self.color, self.state_manager)
                 self.medium_hard_move = False 
@@ -39,7 +39,7 @@ class MoveController:
                 self._easy_move(self.state_manager)
                 self.medium_hard_move = True
         else:
-            self.init_depth = 4
+            self.init_depth = 3
             self._minimax(self.init_depth, self.color, self.state_manager)
 
         best_move = self.best_moves[random.randint(0, len(self.best_moves))-1][0]
@@ -86,35 +86,9 @@ class MoveController:
         else:
             return False
     
-    #TODO must handle the first turn so the AI makes the best move
     def _create_moves_that_player_can_make(self, state, color):        
         valid_moves = []
-
-        #All the possible moves when moving a piece or pieces on the board
-        #yxi kaksi kolme (It looks nicer this way than encapsulting it in functions in my opinon :))) )
-        for src_x in range(0, state["board"].shape[0]):
-            for src_y in range(0, state["board"].shape[1]):
-                    list_z = state["board"][src_x][src_y]
-                    if list_z[0] == 0:
-                        continue  
-                    else:
-                        for i in range(1, state["board"].shape[2]):
-                            if list_z[i] == 0:
-                                count = self._pieces_of_same_color_in_row(list_z, i, color)
-                                for pieces in range(0, count):
-                                    for des_x in range(0, state["board"].shape[0]):
-                                        for des_y in range(0, state["board"].shape[1]):
-                                                #Flat
-                                                move = self._create_move(False, src_x, src_y, des_x, des_y, Orientation.FLAT, pieces, color, False)
-                                                if self._valid_move(move, state):
-                                                    valid_moves.append(move)
-
-                                                #Standing
-                                                move = self._create_move(False, src_x, src_y, des_x, des_y, Orientation.STANDING, pieces, color, False)
-                                                if self._valid_move(move, state):
-                                                    valid_moves.append(move)
-                                break
-        
+        print("hej")
         #All the possible moves when taken from the pile
         for des_x in range(0, state["board"].shape[0]):
             for des_y in range(0, state["board"].shape[1]):
@@ -125,15 +99,42 @@ class MoveController:
                         valid_moves.append(move)
 
                     #Flat
-                    move = self._create_move(True, 0, 0, des_x, des_y, Orientation.FLAT, 1, color, False)
-                    if self._valid_move(move, state):
-                        valid_moves.append(move)
+                    #move = self._create_move(True, 0, 0, des_x, des_y, Orientation.FLAT, 1, color, False)
+                    #if self._valid_move(move, state):
+                    #    valid_moves.append(move)
+        
+        #The best move is to always take from the pile, 
+        # therefore is it only neccssary to move a piece when a move from the pile was not valid
+        if not valid_moves:
+            for src_x in range(0, state["board"].shape[0]):
+                for src_y in range(0, state["board"].shape[1]):
+                        list_z = state["board"][src_x][src_y]
+                        if list_z[0] == 0:
+                            continue  
+                        else:
+                            for i in range(1, state["board"].shape[2]):
+                                if list_z[i] == 0:
+                                    count = self._pieces_of_same_color_in_row(list_z, i, color)
+                                    for pieces in range(0, count):
+                                        for des_x in range(0, state["board"].shape[0]):
+                                            for des_y in range(0, state["board"].shape[1]):
+                                                    #Flat
+                                                    move = self._create_move(False, src_x, src_y, des_x, des_y, Orientation.FLAT, pieces, color, False)
+                                                    if self._valid_move(move, state):
+                                                        valid_moves.append(move)
+
+                                                    #Standing
+                                                    move = self._create_move(False, src_x, src_y, des_x, des_y, Orientation.STANDING, pieces, color, False)
+                                                    if self._valid_move(move, state):
+                                                        valid_moves.append(move)
+                                    break
 
         
         return valid_moves
 
     def _game_over(self, board):
         o = self.validator._win_check(board)
+        print(o)
         if o == Outcome.WIN_BLACK:
             return True, -1
         elif o == Outcome.WIN_WHITE:
@@ -142,8 +143,9 @@ class MoveController:
         return False, 0
     
     def _minimax(self, depth, color, state_manager, alpha=float("-inf"), beta=float("inf")):   
-        
+
         state = state_manager.get_state()
+        #state_manager.print_state()
 
         game_over, who_won = self._game_over(state["board"])
 
@@ -160,7 +162,10 @@ class MoveController:
                 maxEval = max(maxEval, eval)
 
                 if eval >= maxEval:
+                    print("Score:", eval)
+                    print("Move:", move)
                     if depth == self.init_depth:
+                        
                         #best_moves has always the same eval score inside it
                         if self.best_moves:
                             if eval > self.best_moves[0][1]: 

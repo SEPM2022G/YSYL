@@ -80,6 +80,7 @@ class Validator:
         '''
         x_size = board.shape[0]
         y_size = board.shape[1]
+        print(board)
 
         for y in range(0, y_size):
             has_turned = False
