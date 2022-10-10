@@ -80,7 +80,6 @@ class Validator:
         '''
         x_size = board.shape[0]
         y_size = board.shape[1]
-        print(board)
 
         for y in range(0, y_size):
             has_turned = False
@@ -113,9 +112,9 @@ class Validator:
         Helper function for checking outcomes in straight paths
         '''
         x_size = board.shape[0]
-        for _ in range(x, x_size):
-            next_elem = self._find_top(board[x][y])
-            prev_elem = self._find_top(board[x - 1][y])
+        for i in range(x, x_size):
+            next_elem = self._find_top(board[i][y])
+            prev_elem = self._find_top(board[i - 1][y])
 
             if next_elem != prev_elem or prev_elem == -1:
                 return Outcome.CONT
