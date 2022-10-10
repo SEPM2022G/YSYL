@@ -85,11 +85,13 @@ class Board(GridView):
         x_from, y_from = self.get_from_coords()
 
         valid_move = True
+        decrease = False
 
         match self.get_option():
             case SelectedOption.lying:
                 # place a lying piece
                 valid_move = self.move_piece(x, y)
+                decrease = True
 
             case SelectedOption.standing:
                 # rotate a piece
@@ -111,7 +113,7 @@ class Board(GridView):
                     valid_move = self.move_piece(x, y, x_from, y_from)
 
         if (not self.hold) and valid_move:
-            self.update_turn()
+            self.update_turn(decrease)
 
     def reset(self) -> None:
         self.squares = [[Square(x, y, self)
