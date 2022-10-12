@@ -7,3 +7,7 @@ dependencies:
   - pytest
   - numpy
   - watchdog
+  - yapf
+  - mypy
+  - rich
+  - textual

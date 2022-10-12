@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+textual.log
+*.~undo-tree~
+__pycache__/
