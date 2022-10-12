@@ -1,4 +1,4 @@
 all: run
 
 run:
-	python -m main.py
+	python -m main
