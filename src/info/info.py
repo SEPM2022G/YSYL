@@ -5,7 +5,6 @@ from src.info.title import Title
 from src.info.rules import Rules
 from src.info.player import Player
 from src.info.options import Options
-from src.info.tournament import Tournament
 from src.info.notifications import Notifications
 from src.info.picked_up_stack import PickedUpStack
 from rich.panel import Panel
@@ -20,7 +19,6 @@ class Info(GridView):
         """
         super().__init__()
         self.title_widget = Title()
-        self.tournament_widget = Tournament()
         self.player_widget = Player()
         self.rules_widget = ScrollView(contents=Rules())
         self.picked_up_stack_widget = PickedUpStack()  # TODO: change to proper widget
@@ -41,8 +39,7 @@ class Info(GridView):
             title="col1-start|col4-end,row1",
             picked_up_stack="col3,row2-start|row3-end",
             rules="col4,row2-start|row3-end",
-            tournament="col1-start|col2-end,row2",
-            player="col1-start|col2-end,row3",
+            player="col1-start|col2-end,row2",
             lying="col1,row4",
             standing="col2,row4",
             move="col3,row4",
@@ -53,7 +50,6 @@ class Info(GridView):
         self.grid.place(title=self.title_widget,
                         picked_up_stack=self.picked_up_stack_widget,
                         rules=self.rules_widget,
-                        tournament=self.tournament_widget,
                         player=self.player_widget,
                         lying=self.option_lying_widget,
                         standing=self.option_standing_widget,
@@ -95,6 +91,5 @@ class Info(GridView):
             return "None"
 
     def reset(self) -> None:
-        self.tournament_widget.reset()
         self.player_widget.reset()
         self.notification_widget.reset()
