@@ -4,7 +4,11 @@ from src.board.board import Board
 from src.info.info import Info
 from src.constants import PlayerType
 
-class PrettyGameApp(App):
+class YSYLApp(App):
+
+    def set_player_color(self,color):
+        self.color = color;
+
     async def on_load(self) -> None:
         """Sent before going in to application mode."""
         # Bind our basic keys
@@ -12,18 +16,18 @@ class PrettyGameApp(App):
 
     async def on_mount(self) -> None:
         self.info = Info()
-        self.board = Board(self.info.player_widget.next_turn,
-                           self.info.get_option,
-                           self.info.player_widget.get_turn,
-                           self.info.picked_up_stack_widget.set_pieces,
-                           self.info.picked_up_stack_widget.remove)
+        self.board = Board(self.info)
         await self.view.dock(self.board, edge="left", size=100)
         await self.view.dock(self.info, edge="top")
 
-        self.info.player_widget.next_turn()
+        # self.info.player_widget.next_turn()
         self.info.player_widget.set_n_white_pieces(16)
         self.info.player_widget.set_n_black_pieces(15)
-        self.info.player_widget.set_player_color(PlayerType.PLAYER1, PlayerType.AI)
+
+        if color == 'white':
+            self.info.player_widget.set_player_color(PlayerType.PLAYER1, PlayerType.AI)
+        elif color == 'black':
+            self.info.player_widget.set_player_color(PlayerType.AI, PlayerType.PLAYER1)
         self.reset()
 
     def reset(self):
@@ -50,5 +54,9 @@ ai = subprocess.Popen(['python', '-m', 'src.GameEngine.GameAI', '--color=' + ai_
                 ,'--diff=' + str(difficulty), 'src/input/in.json',
                 'src/output/out.json'], close_fds=True)
 
-PrettyGameApp.run(log="textual.log")
+app = YSYLApp()
+app.set_player_color(color)
+
+app.run(log="textual.log")
+
 ai.terminate()

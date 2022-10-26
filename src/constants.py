@@ -32,7 +32,8 @@ class Piece(Enum):
 
 class SelectedOption(Enum):
     # TODO: should be capital letters
-    lying = "Place a piece"
-    standing = "Rotate a piece"
+    lying = "Place a laying piece"
+    standing = "Place a standing piece"
+    rotate = "Rotate a piece"
     stack = "Move a stack"
     move = "Move a piece"
