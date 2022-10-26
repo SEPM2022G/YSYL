@@ -42,11 +42,11 @@ class Player(Widget):
     def next_turn(self, decrease: bool = False, first_turn: bool = False) -> Turn:
         if self.turn == Turn.WHITE:
             if (not first_turn) and decrease: self.decrease_n_white_pieces()
-            elif first_turn and decrease_n_white_pieces: self.decrease_n_black_pieces()
+            elif first_turn and decrease: self.decrease_n_black_pieces()
             self.set_turn(Turn.BLACK)
         elif self.turn == Turn.BLACK:
             if (not first_turn) and decrease: self.decrease_n_black_pieces()
-            elif first_turn and decrease_n_white_pieces: self.decrease_n_white_pieces()
+            elif first_turn and decrease: self.decrease_n_white_pieces()
             self.set_turn(Turn.WHITE)
 
     def set_n_black_pieces(self, n_black_pieces: int) -> None:
