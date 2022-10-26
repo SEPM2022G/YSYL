@@ -1,8 +1,11 @@
 import subprocess
 from textual.app import App
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 from src.board.board import Board
 from src.info.info import Info
 from src.constants import PlayerType
+from src.GameEngine.Components.IOProcessor import IOProcessor
 
 class YSYLApp(App):
 
@@ -20,7 +23,7 @@ class YSYLApp(App):
         await self.view.dock(self.board, edge="left", size=100)
         await self.view.dock(self.info, edge="top")
 
-        # self.info.player_widget.next_turn()
+        self.info.player_widget.next_turn()
         self.info.player_widget.set_n_white_pieces(16)
         self.info.player_widget.set_n_black_pieces(15)
 
@@ -33,6 +36,23 @@ class YSYLApp(App):
     def reset(self):
         self.info.reset()
         self.board.reset()
+
+class Event(FileSystemEventHandler):
+    def dispatch(self, event):
+        if event.event_type != 'modified' or event.is_directory:
+            return
+        try:
+            # Do something here when the ai outputs a move
+            move = io.readOutput()
+            print(move)
+        except Exception as e:
+            print(e)
+            return
+
+
+input_path = 'src/input/in.json'
+out_path = 'src/output/out.json'
+io = IOProcessor(input_path, out_path)
 
 difficulty = int(input("Enter difficulty (1-3): "))
 if difficulty > 3 or difficulty < 1:
@@ -49,14 +69,20 @@ else:
     print("invalid color")
     exit();
 
+input_event = Event()
+observer = Observer()
 
-ai = subprocess.Popen(['python', '-m', 'src.GameEngine.GameAI', '--color=' + ai_color
-                ,'--diff=' + str(difficulty), 'src/input/in.json',
-                'src/output/out.json'], close_fds=True)
+observer.schedule(input_event, out_path)
+observer.start()
 
+ai = subprocess.Popen(['python', '-m', 'src.GameEngine.GameAI', '--color='
+                       + ai_color ,'--diff=' + str(difficulty), input_path,
+                       out_path], close_fds=True)
 app = YSYLApp()
 app.set_player_color(color)
-
 app.run(log="textual.log")
 
+observer.stop()
+observer.join()
 ai.terminate()
+

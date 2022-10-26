@@ -44,6 +44,19 @@ class IOProcessor:
 
         return obj
 
+    def readOutput(self):
+        with open(self.write_path, encoding='utf-8') as f:
+            obj = json.load(f)
+
+        return obj
+
+    def writeInput(self, data):
+        obj = json.dumps(data, indent=4)
+
+        with open(self.read_path, "w") as outfile:
+            outfile.write(obj)
+
+        return 1
     def writeOutput(self, data):
         obj = json.dumps(data, indent=4)
 
