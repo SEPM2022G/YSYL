@@ -1,3 +1,4 @@
+import subprocess
 from textual.app import App
 from src.board.board import Board
 from src.info.info import Info
@@ -19,7 +20,6 @@ class PrettyGameApp(App):
         await self.view.dock(self.board, edge="left", size=100)
         await self.view.dock(self.info, edge="top")
 
-        # TODO: remove just a examples
         self.info.tournament_widget.set_score((1, 1))
         self.info.tournament_widget.set_n_games(1)
         self.info.player_widget.next_turn()
@@ -32,5 +32,25 @@ class PrettyGameApp(App):
         self.info.reset()
         self.board.reset()
 
+difficulty = int(input("Enter difficulty (1-3): "))
+if difficulty > 3 or difficulty < 1:
+    print("invalid difficulty")
+    exit();
+
+ai_color = '';
+color = input("Enter your color (black/white): ").lower()
+if color == 'white':
+    ai_color = 'black'
+elif color == 'black':
+    ai_color = 'white'
+else:
+    print("invalid color")
+    exit();
+
+
+ai = subprocess.Popen(['python', '-m', 'src.GameEngine.GameAI', '--color=' + ai_color
+                ,'--diff=' + str(difficulty), 'src/input/in.json',
+                'src/output/out.json'], close_fds=True)
 
 PrettyGameApp.run(log="textual.log")
+ai.terminate()
