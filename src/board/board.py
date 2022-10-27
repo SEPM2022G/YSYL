@@ -1,3 +1,6 @@
+import GameEngine
+import GameEngine.Components.IOProcessor as IO
+from info.player import Player
 from textual.views import GridView
 from src.board.square import Square
 from src.constants import Piece, Turn, DIM, SelectedOption
@@ -55,7 +58,15 @@ class Board(GridView):
             self.squares[y_end][x_end].add_piece(piece)
         else:
             piece = self.squares[y_start][x_start].remove_piece()
-            if piece: self.squares[y_end][x_end].add_piece(piece)
+            if piece: 
+                self.squares[y_end][x_end].add_piece(piece)
+                input_path = 'src/input/in.json'
+                out_path = 'src/output/out.json'
+                if self.get_turn == Turn.WHITE:
+                    playerMove = { "src": { "pile": False, "pos_x": x_start, "pos_y": y_start }, "des": { "pos_x": x_end, "pos_y": y_end, "orientation": 1}, "pieces": 1, "color": 0, "first_turn": False }
+                else:
+                    playerMove = { "src": { "pile": False, "pos_x": x_start, "pos_y": y_start }, "des": { "pos_x": x_end, "pos_y": y_end, "orientation": 1}, "pieces": 1, "color": 1, "first_turn": False }
+                IO.IOProcessor(input_path, out_path).writeInput(playerMove)
         # TODO: error handling?
         return True
 

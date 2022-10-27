@@ -4,7 +4,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from src.board.board import Board
 from src.info.info import Info
-from src.constants import PlayerType
+from src.constants import PlayerType, SelectedOption
 from src.GameEngine.Components.IOProcessor import IOProcessor
 
 class YSYLApp(App):
@@ -36,7 +36,7 @@ class YSYLApp(App):
     def reset(self):
         self.info.reset()
         self.board.reset()
-
+app = YSYLApp()
 class Event(FileSystemEventHandler):
     def dispatch(self, event):
         if event.event_type != 'modified' or event.is_directory:
@@ -45,6 +45,16 @@ class Event(FileSystemEventHandler):
             # Do something here when the ai outputs a move
             move = io.readOutput()
             print(move)
+            if move["src"]["pile"] == False:
+                app.board.set_coords(move["des"]["pos_x"],move["des"]["pos_y"])
+                app.board.set_from_coords(move["src"]["pos_x"],move["src"]["pos_y"])
+                app.board.info.select_option(SelectedOption.move)
+                app.board.move_handler()
+            else:
+                app.board.set_coords(move["des"]["pos_x"],move["des"]["pos_y"])
+                app.board.set_from_coords(move["src"]["pos_x"],move["src"]["pos_y"])
+                app.board.info.select_option(SelectedOption.stack)
+                app.board.move_handler()
         except Exception as e:
             print(e)
             return
@@ -71,14 +81,13 @@ else:
 
 input_event = Event()
 observer = Observer()
-
 observer.schedule(input_event, out_path)
 observer.start()
 
 ai = subprocess.Popen(['python', '-m', 'src.GameEngine.GameAI', '--color='
                        + ai_color ,'--diff=' + str(difficulty), input_path,
                        out_path], close_fds=True)
-app = YSYLApp()
+
 app.set_player_color(color)
 app.run(log="textual.log")
 
