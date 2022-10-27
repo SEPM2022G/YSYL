@@ -39,19 +39,15 @@ class Player(Widget):
     def get_turn(self) -> Turn:
         return self.turn
 
-    def turn_black(self) -> Turn:
-        return self.set_turn(Turn.BLACK)
-
-    def turn_white(self) -> Turn:
-        return self.set_turn(Turn.WHITE)
-
-    def next_turn(self, decrease: bool = False) -> Turn:
+    def next_turn(self, decrease: bool = False, first_turn: bool = False) -> Turn:
         if self.turn == Turn.WHITE:
-            if decrease: self.decrease_n_white_pieces()
-            return self.turn_black()
+            if (not first_turn) and decrease: self.decrease_n_white_pieces()
+            elif first_turn and decrease: self.decrease_n_black_pieces()
+            self.set_turn(Turn.BLACK)
         elif self.turn == Turn.BLACK:
-            if decrease: self.decrease_n_black_pieces()
-            return self.turn_white()
+            if (not first_turn) and decrease: self.decrease_n_black_pieces()
+            elif first_turn and decrease: self.decrease_n_white_pieces()
+            self.set_turn(Turn.WHITE)
 
     def set_n_black_pieces(self, n_black_pieces: int) -> None:
         self.n_black_pieces = n_black_pieces
@@ -76,6 +72,6 @@ class Player(Widget):
         self.player2 = player2
 
     def reset(self) -> None:
-        self.turn = Turn.BLACK  # Black is alwase the one who starts
+        self.turn = Turn.WHITE  # Black is alwase the one who starts
         self.n_black_pieces = 21  # Initaly black has 21 pieces
         self.n_white_pieces = 21  # Initaly white has 21 pieces

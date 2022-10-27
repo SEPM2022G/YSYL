@@ -4,9 +4,10 @@ DIM = 5  # The dimension of the board, i.e. 5x5
 
 
 class Notification(Enum):
-    NORMAL = "Keep it up. You playing like a there is no tomorrow!"
+    NORMAL = "Keep it up. You are playing like a there is no tomorrow!"
     ERROR = "A error occurred"
     INVALID_MOVE = "The move is not valid, try again"
+    AI_THINKING = "The ai is thinking..."
     VICTORY = "You won :)"
     LOSS = "You lost :("
 
@@ -31,7 +32,8 @@ class Piece(Enum):
 
 class SelectedOption(Enum):
     # TODO: should be capital letters
-    lying = "Place a piece"
-    standing = "Rotate a piece"
+    lying = "Place a laying piece"
+    standing = "Place a standing piece"
+    rotate = "Rotate a piece"
     stack = "Move a stack"
     move = "Move a piece"

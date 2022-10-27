@@ -5,7 +5,6 @@ from src.info.title import Title
 from src.info.rules import Rules
 from src.info.player import Player
 from src.info.options import Options
-from src.info.tournament import Tournament
 from src.info.notifications import Notifications
 from src.info.picked_up_stack import PickedUpStack
 from rich.panel import Panel
@@ -20,10 +19,11 @@ class Info(GridView):
         """
         super().__init__()
         self.title_widget = Title()
-        self.tournament_widget = Tournament()
         self.player_widget = Player()
         self.rules_widget = ScrollView(contents=Rules())
         self.picked_up_stack_widget = PickedUpStack()  # TODO: change to proper widget
+        self.option_rotate_widget = Options(SelectedOption.rotate,
+                                              self.select_option)
         self.option_lying_widget = Options(SelectedOption.lying,
                                            self.select_option)
         self.option_standing_widget = Options(SelectedOption.standing,
@@ -41,8 +41,8 @@ class Info(GridView):
             title="col1-start|col4-end,row1",
             picked_up_stack="col3,row2-start|row3-end",
             rules="col4,row2-start|row3-end",
-            tournament="col1-start|col2-end,row2",
-            player="col1-start|col2-end,row3",
+            player="col1-start|col2-end,row2",
+            rotate="col1,row3",
             lying="col1,row4",
             standing="col2,row4",
             move="col3,row4",
@@ -53,8 +53,8 @@ class Info(GridView):
         self.grid.place(title=self.title_widget,
                         picked_up_stack=self.picked_up_stack_widget,
                         rules=self.rules_widget,
-                        tournament=self.tournament_widget,
                         player=self.player_widget,
+                        rotate=self.option_rotate_widget,
                         lying=self.option_lying_widget,
                         standing=self.option_standing_widget,
                         stack=self.option_stack_widget,
@@ -69,6 +69,7 @@ class Info(GridView):
         self.option_standing_widget.set_selected(False)
         self.option_stack_widget.set_selected(False)
         self.option_move_widget.set_selected(False)
+        self.option_rotate_widget.set_selected(False)
 
         # Set selected to true for the correct option
         if (option == SelectedOption.lying):
@@ -79,6 +80,8 @@ class Info(GridView):
             self.option_stack_widget.set_selected(True)
         elif (option == SelectedOption.move):
             self.option_move_widget.set_selected(True)
+        elif (option == SelectedOption.rotate):
+            self.option_rotate_widget.set_selected(True)
         else:  # sanity check
             print(f"No such option {option}")
 
@@ -91,10 +94,11 @@ class Info(GridView):
             return SelectedOption.stack
         elif (self.option_move_widget.get_selected()):
             return SelectedOption.move
+        elif (self.option_rotate_widget.get_selected()):
+            return SelectedOption.rotate
         else:
             return "None"
 
     def reset(self) -> None:
-        self.tournament_widget.reset()
         self.player_widget.reset()
         self.notification_widget.reset()
