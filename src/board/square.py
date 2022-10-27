@@ -27,7 +27,7 @@ class Square(Widget):
 
     def render(self) -> Panel:
         return Panel(self.render_pieces(),
-                     style=("on green" if self.mouse_over else ""))
+                     style=("on grey35" if self.mouse_over else ""))
 
     def render_pieces(self) -> str:
         # This is a ugly solution and requres a constant row of 7.
