@@ -106,7 +106,7 @@ class Board(GridView):
             case SelectedOption.move:
                 # move a piece
                 if not self.hold:
-                    valid_move = self.move_piece(x, y, x_from, y_from)
+                    valid_move = self.move_piece(None, x, y, x_from, y_from)
 
             case SelectedOption.rotate:
                 valid_move = self.rotate_piece(x, y)
