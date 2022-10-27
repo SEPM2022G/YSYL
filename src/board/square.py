@@ -10,6 +10,7 @@ class Square(Widget):
     # When mouse_over or pieces changes the view will update
     mouse_over: Reactive[RenderableType] = Reactive(False)
     pieces: Reactive[RenderableType] = Reactive([])
+    color = ""
 
     def __init__(self, x: int, y: int, parent) -> None:
         """
@@ -26,8 +27,9 @@ class Square(Widget):
         self.reset()
 
     def render(self) -> Panel:
+        self.color = "bright_white"
         return Panel(self.render_pieces(),
-                     style=("on grey35" if self.mouse_over else ""))
+                     style=("black on white" if self.color else "on grey35"))
 
     def render_pieces(self) -> str:
         # This is a ugly solution and requres a constant row of 7.
@@ -38,6 +40,7 @@ class Square(Widget):
         pieces_str = ""
         r = 0
         c = 0
+        self.color = "green"
 
         # first insert
         for i in range(len(self.pieces)):
