@@ -1,6 +1,5 @@
-import GameEngine
-import GameEngine.Components.IOProcessor as IO
-from info.player import Player
+import src.GameEngine.Components.IOProcessor as IO
+from src.info.player import Player
 from textual.views import GridView
 from src.board.square import Square
 from src.constants import Piece, Turn, DIM, SelectedOption
@@ -63,7 +62,7 @@ class Board(GridView):
                 input_path = 'src/input/in.json'
                 out_path = 'src/output/out.json'
                 if self.get_turn == Turn.WHITE:
-                    playerMove = { "src": { "pile": False, "pos_x": x_start, "pos_y": y_start }, "des": { "pos_x": x_end, "pos_y": y_end, "orientation": 1}, "pieces": 1, "color": 0, "first_turn": False }
+                   playerMove = { "src": { "pile": False, "pos_x": x_start, "pos_y": y_start }, "des": { "pos_x": x_end, "pos_y": y_end, "orientation": 1}, "pieces": 1, "color": 0, "first_turn": False }
                 else:
                     playerMove = { "src": { "pile": False, "pos_x": x_start, "pos_y": y_start }, "des": { "pos_x": x_end, "pos_y": y_end, "orientation": 1}, "pieces": 1, "color": 1, "first_turn": False }
                 IO.IOProcessor(input_path, out_path).writeInput(playerMove)
@@ -117,7 +116,7 @@ class Board(GridView):
             case SelectedOption.move:
                 # move a piece
                 if not self.hold:
-                    valid_move = self.move_piece(x, y, x_from, y_from)
+                    valid_move = self.move_piece(None,x, y, x_from, y_from)
 
             case SelectedOption.rotate:
                 valid_move = self.rotate_piece(x, y)

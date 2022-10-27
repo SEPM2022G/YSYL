@@ -46,9 +46,9 @@ class Event(FileSystemEventHandler):
             move = io.readOutput()
             print(move)
             if move["src"]["pile"] == False:
+                app.board.info.select_option(SelectedOption.move)
                 app.board.set_coords(move["des"]["pos_x"],move["des"]["pos_y"])
                 app.board.set_from_coords(move["src"]["pos_x"],move["src"]["pos_y"])
-                app.board.info.select_option(SelectedOption.move)
                 app.board.move_handler()
             else:
                 app.board.set_coords(move["des"]["pos_x"],move["des"]["pos_y"])
