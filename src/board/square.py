@@ -26,10 +26,23 @@ class Square(Widget):
         self.y = y
         self.reset()
 
-    def render(self) -> Panel:
-        self.color = "bright_white"
+    def render(self) -> Panel: 
+        color = None
+        
+        if(self.x % 2 == 0):
+            if(self.x % 2 == 0 and self.y % 2 == 0):
+                color = "on black"
+            else:
+                 color = "on white"
+        else:    
+            if(self.x % 2 != 0 and self.y % 2 != 0):
+                color = "on black"
+            else:
+                 color = "on white"
+        
+        
         return Panel(self.render_pieces(),
-                     style=("black on white" if self.color else "on grey35"))
+                     style=("on green" if self.mouse_over else color))
 
     def render_pieces(self) -> str:
         # This is a ugly solution and requres a constant row of 7.
