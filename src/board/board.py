@@ -175,6 +175,9 @@ class Board(GridView):
         move['des']['pos_x'], move['des']['pos_y'] = self.get_coords()
         opt = self.get_option()
 
+        x, y = self.get_coords()
+        pieces = self.squares[y][x].get_pieces()
+
         if opt == SelectedOption.standing:
             move['src']['pos_x'] = -1
             move['src']['pos_y'] = -1
@@ -188,8 +191,16 @@ class Board(GridView):
             move['src']['pile'] = True
 
         if opt == SelectedOption.move:
+            if len(pieces) > 0:
+                curr_orientation = pieces[0]
+            else: return
             move['src']['pos_x'], move['src']['pos_y'] = self.get_from_coords()
+            move['des']['orientation'] = 0
             move['src']['pile'] = False
+            if curr_orientation == Piece.BL or curr_orientation == Piece.WL:
+                move['des']['orientation'] = 0
+            if curr_orientation == Piece.BS or curr_orientation == Piece.WS:
+                move['des']['orientation'] = 1
 
         #TODO: Correct stack behaviour
         if opt == SelectedOption.stack:
@@ -197,12 +208,14 @@ class Board(GridView):
             move['src']['pile'] = False
 
         if opt == SelectedOption.rotate:
+            if len(pieces) > 0:
+                curr_orientation = pieces[0]
+            else: return
+
             move['src']['pos_x'] = -1
             move['src']['pos_y'] = -1
             move['src']['pile'] = False
 
-            x, y = self.get_coords()
-            curr_orientation = self.squares[y][x].get_pieces()[0]
             if curr_orientation == Piece.BL or curr_orientation == Piece.WL:
                 move['des']['orientation'] = 1
             if curr_orientation == Piece.BS or curr_orientation == Piece.WS:
@@ -218,7 +231,7 @@ class Board(GridView):
             self.set_from_coords(move['src']['pos_x'], move['src']['pos_y'])
         else: self.set_from_coords(-1,-1)
 
-        if move['des']['orientation'] == 1:
+        if int(move['des']['orientation']) == 1:
             self.move_handler(SelectedOption.standing)
         else:
             self.move_handler(SelectedOption.lying)
