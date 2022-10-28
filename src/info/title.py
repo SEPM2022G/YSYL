@@ -11,4 +11,4 @@ class Title(Widget):
         MARKDOWN_TITLE += "or move stack. To move a stack you"
         MARKDOWN_TITLE += "click on a stack then click on the square"
         MARKDOWN_TITLE += "you want the botom piece to be."
-        return Markdown(MARKDOWN_TITLE)
+        return Markdown(MARKDOWN_TITLE, style="bold yellow")
