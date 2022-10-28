@@ -1,11 +1,10 @@
 import subprocess
-import time
 from textual.app import App
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from src.board.board import Board
 from src.info.info import Info
-from src.constants import PlayerType, SelectedOption
+from src.constants import PlayerType, SelectedOption, Notification
 from src.GameEngine.Components.IOProcessor import IOProcessor
 
 input_path = 'src/input/in.json'

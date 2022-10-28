@@ -19,16 +19,16 @@ class Board(GridView):
         super().__init__()
         self.io = io
         self.info = info
-        self.validator = Validator()
         #TODO: first turn logic
         self.turn_count = 0;
         self.first_turn = False;
-        self.blocked = False;
+        self.freezed = False;
         self.update_turn = info.player_widget.next_turn
         self.get_option = info.get_option
         self.get_turn = info.player_widget.get_turn
         self.set_stack = info.picked_up_stack_widget.set_pieces
         self.pop_stack = info.picked_up_stack_widget.remove
+        self.old_state = { 'squares': [], 'white_pieces': 0, 'black_pieces': 0}
         self.reset()
 
     async def on_mount(self) -> None:
@@ -43,6 +43,24 @@ class Board(GridView):
         for x in self.squares:
             for n in x:
                 self.grid.add_widget(n)
+
+    def save_board(self):
+        self.old_state = { 'squares': [], 'white_pieces': 0, 'black_pieces': 0}
+        self.old_state['white_pieces'] = self.info.player_widget.n_white_pieces
+        self.old_state['black_pieces'] = self.info.player_widget.n_black_pieces
+        for i,x in enumerate(self.squares):
+            self.old_state['squares'].append([])
+            for j,n in enumerate(x):
+                self.old_state['squares'][i].append(n.get_pieces().copy())
+
+    def undo_board(self):
+        self.update_turn(False)
+        self.info.player_widget.n_white_pieces =  self.old_state['white_pieces']
+        self.info.player_widget.n_black_pieces = self.old_state['black_pieces']
+        for i,x in enumerate(self.squares):
+            for j,n in enumerate(x):
+                n.set_pieces(self.old_state['squares'][i][j].copy())
+    
 
     def set_from_coords(self, x: int, y: int) -> None:
         self.x_from = x
@@ -127,16 +145,13 @@ class Board(GridView):
             self.update_turn(decrease)
 
     def perform_player_move(self):
-        if self.blocked: return
+        if self.freezed: return
         self.turn_count = self.turn_count + 1
         move = self.move_to_json()
-        #TODO: validaton
-        is_valid = True #self.validator(move)
-        if(is_valid):
-            self.move_handler()
-            self.io.writeInput(move)
-            self.info.notification_widget.set_notification(Notification.AI_THINKING)
-            self.blocked = True
+        self.move_handler()
+        self.io.writeInput(move)
+        self.info.notification_widget.set_notification(Notification.AI_THINKING)
+        self.freezed = True
 
 
     def perform_ai_move(self, move):
@@ -145,14 +160,17 @@ class Board(GridView):
 
         if int(move['outcome']) == 1:
             self.json_to_move(move['move'])
-            self.blocked = False
+            self.save_board()
+            self.freezed = False
         elif int(move['outcome']) == 2:
             self.info.notification_widget.set_notification(Notification.VICTORY)
         elif int(move['outcome']) == 3:
             self.json_to_move(move['move'])
             self.info.notification_widget.set_notification(Notification.LOSS)
         else:
-            raise Exception("Invalid Move, Aborting")
+            self.undo_board()
+            self.info.notification_widget.set_notification(Notification.INVALID_MOVE)
+            self.freezed = False
 
     def move_to_json(self): 
         move = {
