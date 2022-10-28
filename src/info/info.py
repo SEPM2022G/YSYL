@@ -20,7 +20,6 @@ class Info(GridView):
         super().__init__()
         self.title_widget = Title()
         self.player_widget = Player()
-        self.rules_widget = ScrollView(contents=Rules())
         self.picked_up_stack_widget = PickedUpStack()  # TODO: change to proper widget
         self.option_rotate_widget = Options(SelectedOption.rotate,
                                               self.select_option)
@@ -35,6 +34,7 @@ class Info(GridView):
         self.notification_widget = Notifications()
 
     async def on_mount(self) -> None:
+        self.rules_widget = ScrollView(contents=Rules())
         self.grid.add_column("col", repeat=4)
         self.grid.add_row("row", repeat=5)
         self.grid.add_areas(

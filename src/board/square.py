@@ -18,7 +18,7 @@ class Square(Widget):
         :param x: Which column the square is in.
         :param y: Which row the square is in.
         :param parent: The board.
-        :param move_handler: A function that moves/lay a piece.
+        :param perform_player_move: A function that moves/lay a piece.
         """
         super().__init__()
         self.x = x
@@ -65,7 +65,7 @@ class Square(Widget):
         if self.parent.get_option() == SelectedOption.stack:
             if not self.parent.hold:
                 self.parent.set_coords(self.x, self.y)
-                self.parent.move_handler()
+                self.parent.perform_player_move()
                 self.parent.hold = True
                 return
 
@@ -87,7 +87,7 @@ class Square(Widget):
 
         # Default behavior
         self.parent.set_coords(self.x, self.y)
-        self.parent.move_handler()
+        self.parent.perform_player_move()
 
     def get_pieces(self) -> list(Piece):
         return self.pieces

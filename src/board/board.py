@@ -1,21 +1,28 @@
-import src.GameEngine.Components.IOProcessor as IO
+import uuid
+from src.GameEngine.Components.Validator import Validator
+from src.info.info import Info
 from src.info.player import Player
 from textual.views import GridView
 from src.board.square import Square
-from src.constants import Piece, Turn, DIM, SelectedOption
+from src.constants import Piece, Turn, DIM, SelectedOption, Notification
 
 
 class Board(GridView):
     """ The right view containging all squares """
 
-    def __init__(self, info) -> None:
+    def __init__(self, info, io) -> None:
         """
         Create empty squares whith defined cordinets (x, y).
 
         :param info: Info component
         """
         super().__init__()
+        self.io = io
         self.info = info
+        self.validator = Validator()
+        #TODO: first turn logic
+        self.turn_count = 0;
+        self.first_turn = False;
         self.update_turn = info.player_widget.next_turn
         self.get_option = info.get_option
         self.get_turn = info.player_widget.get_turn
@@ -59,14 +66,6 @@ class Board(GridView):
             piece = self.squares[y_start][x_start].remove_piece()
             if piece: 
                 self.squares[y_end][x_end].add_piece(piece)
-                input_path = 'src/input/in.json'
-                out_path = 'src/output/out.json'
-                if self.get_turn == Turn.WHITE:
-                   playerMove = { "src": { "pile": False, "pos_x": x_start, "pos_y": y_start }, "des": { "pos_x": x_end, "pos_y": y_end, "orientation": 1}, "pieces": 1, "color": 0, "first_turn": False }
-                else:
-                    playerMove = { "src": { "pile": False, "pos_x": x_start, "pos_y": y_start }, "des": { "pos_x": x_end, "pos_y": y_end, "orientation": 1}, "pieces": 1, "color": 1, "first_turn": False }
-                IO.IOProcessor(input_path, out_path).writeInput(playerMove)
-        # TODO: error handling?
         return True
 
     def drop_piece(self, x: int, y: int) -> bool:
@@ -81,7 +80,9 @@ class Board(GridView):
     def rotate_piece(self, x: int, y: int) -> bool:
         return self.squares[y][x].rotate()
 
-    def move_handler(self) -> None:
+    def move_handler(self, opt = None) -> None:
+        if opt == None: opt = self.get_option()
+
         # fetch coordinates, i.e. x and y position of a square
         x, y = self.get_coords()
         x_from, y_from = self.get_from_coords()
@@ -91,7 +92,7 @@ class Board(GridView):
 
         turn = self.get_turn()
 
-        match self.get_option():
+        match opt:
 
             case SelectedOption.lying:
                 if turn == Turn.BLACK: valid_move = self.move_piece(Piece.WL, x, y)
@@ -123,6 +124,100 @@ class Board(GridView):
 
         if (not self.hold) and valid_move:
             self.update_turn(decrease)
+
+    def perform_player_move(self):
+        self.turn_count = self.turn_count + 1
+        move = self.move_to_json()
+        #TODO: validaton
+        is_valid = True #self.validator(move)
+        if(is_valid):
+            self.move_handler()
+            self.io.writeInput(move)
+            self.info.notification_widget.set_notification(Notification.AI_THINKING)
+
+
+    def perform_ai_move(self, move):
+        self.turn_count = self.turn_count + 1
+        self.info.notification_widget.set_notification(Notification.NORMAL)
+        move = self.io.readOutput()
+
+        if int(move['outcome']) == 1:
+            self.json_to_move(move['move'])
+        elif int(move['outcome']) == 2:
+            self.info.notification_widget.set_notification(Notification.VICTORY)
+        elif int(move['outcome']) == 3:
+            self.into.notification_widget.set_notification(Notification.LOSS)
+        else:
+            raise Exception("Invalid Move, Aborting")
+
+    def move_to_json(self): 
+        move = {
+            "src": {
+            },
+            "des": {
+            },
+            "pieces": 1,
+            "first_turn": self.first_turn
+        }
+
+        move['id'] = str(uuid.uuid4())
+
+        if self.get_turn() == Turn.WHITE:
+            move['color'] = 0
+
+        if self.get_turn() == Turn.BLACK:
+            move['color'] = 1
+
+        move['des']['pos_x'], move['des']['pos_y'] = self.get_coords()
+        opt = self.get_option()
+
+        if opt == SelectedOption.standing:
+            move['src']['pos_x'] = -1
+            move['src']['pos_y'] = -1
+            move['des']['orientation'] = 1
+            move['src']['pile'] = True
+
+        if opt == SelectedOption.lying:
+            move['src']['pos_x'] = -1
+            move['src']['pos_y'] = -1
+            move['des']['orientation'] = 0
+            move['src']['pile'] = True
+
+        if opt == SelectedOption.move:
+            move['src']['pos_x'], move['src']['pos_y'] = self.get_from_coords()
+            move['src']['pile'] = False
+
+        #TODO: Correct stack behaviour
+        if opt == SelectedOption.stack:
+            move['src']['pos_x'], move['src']['pos_y'] = self.get_from_coords()
+            move['src']['pile'] = False
+
+        if opt == SelectedOption.rotate:
+            move['src']['pos_x'] = -1
+            move['src']['pos_y'] = -1
+            move['src']['pile'] = False
+
+            x, y = self.get_coords()
+            curr_orientation = self.squares[y][x].get_pieces()[0]
+            if curr_orientation == Piece.BL or curr_orientation == Piece.WL:
+                move['des']['orientation'] = 1
+            if curr_orientation == Piece.BS or curr_orientation == Piece.WS:
+                move['des']['orientation'] = 1
+
+        return move
+
+    def json_to_move(self,move):
+        x = int(move['des']['pos_x'])
+        y = int(move['des']['pos_y'])
+        self.set_coords(x, y)
+        if not move['src']['pile']:
+            self.set_from_coords(move['src']['pos_x'], move['src']['pos_y'])
+        else: self.set_from_coords(-1,-1)
+
+        if move['des']['orientation'] == 1:
+            self.move_handler(SelectedOption.standing)
+        else:
+            self.move_handler(SelectedOption.lying)
 
     def reset(self) -> None:
         self.squares = [[Square(x, y, self)

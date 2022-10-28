@@ -54,11 +54,17 @@ sm = StateManager()
 mc = MoveController(sm, difficulty, ai_color)
 
 class Event(FileSystemEventHandler):
+    def __init__(self):
+        super().__init__()
+        self.prev_move_id = ''
+
     def dispatch(self, event):
         if event.event_type != 'modified' or event.is_directory:
             return
         try:
             move = io.readInput()
+            if move['id'] == self.prev_move_id: return
+            else: self.prev_move_id = move['id']
         except Exception as e:
             print(e)
             return
