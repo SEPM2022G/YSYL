@@ -23,6 +23,7 @@ class Board(GridView):
         #TODO: first turn logic
         self.turn_count = 0;
         self.first_turn = False;
+        self.blocked = False;
         self.update_turn = info.player_widget.next_turn
         self.get_option = info.get_option
         self.get_turn = info.player_widget.get_turn
@@ -126,6 +127,7 @@ class Board(GridView):
             self.update_turn(decrease)
 
     def perform_player_move(self):
+        if self.blocked: return
         self.turn_count = self.turn_count + 1
         move = self.move_to_json()
         #TODO: validaton
@@ -134,19 +136,21 @@ class Board(GridView):
             self.move_handler()
             self.io.writeInput(move)
             self.info.notification_widget.set_notification(Notification.AI_THINKING)
+            self.blocked = True
 
 
     def perform_ai_move(self, move):
         self.turn_count = self.turn_count + 1
         self.info.notification_widget.set_notification(Notification.NORMAL)
-        move = self.io.readOutput()
 
         if int(move['outcome']) == 1:
             self.json_to_move(move['move'])
+            self.blocked = False
         elif int(move['outcome']) == 2:
             self.info.notification_widget.set_notification(Notification.VICTORY)
         elif int(move['outcome']) == 3:
-            self.into.notification_widget.set_notification(Notification.LOSS)
+            self.json_to_move(move['move'])
+            self.info.notification_widget.set_notification(Notification.LOSS)
         else:
             raise Exception("Invalid Move, Aborting")
 

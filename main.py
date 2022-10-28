@@ -45,7 +45,10 @@ class YSYLApp(App):
         self.board.reset()
 
 class Event(FileSystemEventHandler):
-    prev_move_id = ''
+    def __init__(self):
+        super().__init__()
+        self.prev_move_id = ''
+
     def dispatch(self, event):
         if event.event_type != 'modified' or event.is_directory:
             return
@@ -54,6 +57,7 @@ class Event(FileSystemEventHandler):
         if move['id'] == self.prev_move_id:
             return
 
+        self.prev_move_id = move['id']
         app.board.perform_ai_move(move)
 
 
