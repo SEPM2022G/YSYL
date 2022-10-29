@@ -20,7 +20,7 @@ class Info(GridView):
         super().__init__()
         self.title_widget = Title()
         self.player_widget = Player()
-        self.picked_up_stack_widget = PickedUpStack()  # TODO: change to proper widget
+        self.picked_up_stack_widget = PickedUpStack()
         self.option_rotate_widget = Options(SelectedOption.rotate,
                                               self.select_option)
         self.option_lying_widget = Options(SelectedOption.lying,

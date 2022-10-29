@@ -19,8 +19,9 @@ class Board(GridView):
         super().__init__()
         self.io = io
         self.info = info
-        self.move_count = 0;
-        self.freezed = False;
+        self.move_count = 0
+        self.hold = False
+        self.freezed = False
         self.update_turn = info.player_widget.next_turn
         self.get_option = info.get_option
         self.get_turn = info.player_widget.get_turn
@@ -81,8 +82,7 @@ class Board(GridView):
             self.squares[y_end][x_end].add_piece(piece)
         else:
             piece = self.squares[y_start][x_start].remove_piece()
-            if piece: 
-                self.squares[y_end][x_end].add_piece(piece)
+            self.squares[y_end][x_end].add_piece(piece)
         return True
 
     def drop_piece(self, x: int, y: int) -> bool:
@@ -144,9 +144,7 @@ class Board(GridView):
                     self.drop_piece(x, y)
 
             case SelectedOption.move:
-                # move a piece
-                if not self.hold:
-                    valid_move = self.move_piece(None,x, y, x_from, y_from)
+                valid_move = self.move_piece(None, x, y , x_from, y_from)
 
             case SelectedOption.rotate:
                 valid_move = self.rotate_piece(x, y)
@@ -223,12 +221,17 @@ class Board(GridView):
             move['des']['orientation'] = 0
             move['src']['pile'] = True
 
+        #TODO: Correct move behaviour
         if opt == SelectedOption.move:
-            if len(pieces) > 0:
-                curr_orientation = pieces[0]
-            else: 
-                return None
-            move['src']['pos_x'], move['src']['pos_y'] = self.get_from_coords()
+            x_from, y_from = self.get_from_coords()
+            move['src']['pos_x'] = x_from
+            move['src']['pos_y'] = y_from
+            from_pieces = self.squares[y_from][x_from].get_pieces()
+
+            if len(from_pieces) > 0 and not self.hold:
+                curr_orientation = from_pieces[0]
+            else: return None
+
             move['des']['orientation'] = 0
             move['src']['pile'] = False
             if curr_orientation == Piece.BL or curr_orientation == Piece.WL:
@@ -244,7 +247,7 @@ class Board(GridView):
         if opt == SelectedOption.rotate:
             if len(pieces) > 0:
                 curr_orientation = pieces[0]
-            else: return
+            else: return None
 
             move['src']['pos_x'] = x
             move['src']['pos_y'] = y
