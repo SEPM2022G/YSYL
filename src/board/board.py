@@ -253,7 +253,7 @@ class Board(GridView):
             if curr_orientation == Piece.BL or curr_orientation == Piece.WL:
                 move['des']['orientation'] = 1
             if curr_orientation == Piece.BS or curr_orientation == Piece.WS:
-                move['des']['orientation'] = 1
+                move['des']['orientation'] = 0
 
         return move
 
