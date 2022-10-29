@@ -1,3 +1,5 @@
+import sys
+import getopt
 import subprocess
 from textual.app import App
 from watchdog.observers import Observer
@@ -9,6 +11,14 @@ from src.GameEngine.Components.IOProcessor import IOProcessor
 
 input_path = 'src/input/in.json'
 out_path = 'src/output/out.json'
+ui_only = False
+
+argv = sys.argv[1:]
+opts, args = getopt.getopt(argv, '', ['ui'])
+
+
+for opt in opts:
+    if opt[0] == '--ui': ui_only = True
 
 class YSYLApp(App):
     io = IOProcessor(input_path, out_path)
@@ -67,14 +77,6 @@ if difficulty > 3 or difficulty < 1:
 
 ai_color = 'black';
 color = 'white'
-# color = input("Enter your color (black/white): ").lower()
-# if color == 'white':
-#     ai_color = 'black'
-# elif color == 'black':
-#     ai_color = 'white'
-# else:
-#     print("invalid color")
-#     exit();
 
 app = YSYLApp()
 observer = Observer()
@@ -83,9 +85,10 @@ observer.schedule(input_event, out_path)
 observer.start()
 
 
-# ai = subprocess.Popen(['python', '-m', 'src.GameEngine.GameAI', '--color='
-#                        + ai_color ,'--diff=' + str(difficulty), input_path,
-#                        out_path], close_fds=True)
+if not ui_only:
+    ai = subprocess.Popen(['python', '-m', 'src.GameEngine.GameAI', '--color='
+                           + ai_color ,'--diff=' + str(difficulty), input_path,
+                           out_path], stdout=subprocess.PIPE)
 
 app.set_player_color(color)
 app.run(log="textual.log")
@@ -93,4 +96,5 @@ app.run(log="textual.log")
 
 observer.stop()
 observer.join()
-# ai.terminate()
+
+if not ui_only: ai.terminate()
