@@ -25,8 +25,6 @@ class Board(GridView):
         self.update_turn = info.player_widget.next_turn
         self.get_option = info.get_option
         self.get_turn = info.player_widget.get_turn
-        self.set_stack = info.picked_up_stack_widget.set_pieces
-        self.pop_stack = info.picked_up_stack_widget.remove
         self.old_state = { 'squares': [], 'white_pieces': 0, 'black_pieces': 0}
         self.reset()
 
@@ -85,14 +83,15 @@ class Board(GridView):
             self.squares[y_end][x_end].add_piece(piece)
         return True
 
-    def drop_piece(self, x: int, y: int) -> bool:
-        piece = self.pop_stack()
-        if piece is None:
-            self.hold = False
-            return False
-        else:
-            self.squares[y][x].add_piece(piece)
-            return True
+    def move_stack(self, piece : Piece,x_end: int, y_end: int,
+                   x_start: int , y_start: int) -> bool:
+
+        pieces = self.squares[y_start][x_start].get_pieces().copy()
+        piece = pieces.pop()
+        self.squares[y_start][x_start].set_pieces([piece])
+        self.squares[y_end][x_end].set_pieces(pieces)
+        return True
+
 
     def rotate_piece(self, x: int, y: int) -> bool:
         return self.squares[y][x].rotate()
@@ -134,14 +133,7 @@ class Board(GridView):
                 decrease = True
 
             case SelectedOption.stack:
-                # move a stack
-                if not self.hold:
-                    stack = self.squares[y][x].pick_up_stack()
-                    self.set_stack(stack)
-                    if (len(stack) == 0):
-                        valid_move = False
-                else:
-                    self.drop_piece(x, y)
+                valid_move = self.move_stack(None, x, y , x_from, y_from)
 
             case SelectedOption.move:
                 valid_move = self.move_piece(None, x, y , x_from, y_from)
@@ -221,7 +213,6 @@ class Board(GridView):
             move['des']['orientation'] = 0
             move['src']['pile'] = True
 
-        #TODO: Correct move behaviour
         if opt == SelectedOption.move:
             x_from, y_from = self.get_from_coords()
             move['src']['pos_x'] = x_from
@@ -239,10 +230,24 @@ class Board(GridView):
             if curr_orientation == Piece.BS or curr_orientation == Piece.WS:
                 move['des']['orientation'] = 1
 
-        #TODO: Correct stack behaviour
         if opt == SelectedOption.stack:
-            move['src']['pos_x'], move['src']['pos_y'] = self.get_from_coords()
+            x_from, y_from = self.get_from_coords()
+            move['src']['pos_x'] = x_from
+            move['src']['pos_y'] = y_from
+            from_pieces = self.squares[y_from][x_from].get_pieces()
+            move['pieces'] = len(from_pieces) - 1
+
+            if len(from_pieces) > 0 and not self.hold:
+                curr_orientation = from_pieces[0]
+            else: return None
+
+            move['des']['orientation'] = 0
             move['src']['pile'] = False
+            if curr_orientation == Piece.BL or curr_orientation == Piece.WL:
+                move['des']['orientation'] = 0
+            if curr_orientation == Piece.BS or curr_orientation == Piece.WS:
+                move['des']['orientation'] = 1
+
 
         if opt == SelectedOption.rotate:
             if len(pieces) > 0:
