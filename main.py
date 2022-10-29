@@ -1,6 +1,7 @@
 import sys
 import getopt
 import subprocess
+import os
 from textual.app import App
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -9,8 +10,17 @@ from src.info.info import Info
 from src.constants import PlayerType, SelectedOption, Notification
 from src.GameEngine.Components.IOProcessor import IOProcessor
 
-input_path = 'src/input/in.json'
-out_path = 'src/output/out.json'
+windows_run = False
+
+if os.name == 'nt':
+    windows_run = True
+
+if windows_run:
+    input_path = os.path.abspath("src/input/in.json")
+    out_path = os.path.abspath("src/output/out.json")
+else:
+    input_path = 'src/input/in.json'
+    out_path = 'src/output/out.json'
 ui_only = False
 
 argv = sys.argv[1:]
@@ -59,7 +69,7 @@ class Event(FileSystemEventHandler):
         self.prev_move_id = ''
 
     def dispatch(self, event):
-        if event.event_type != 'modified' or event.is_directory:
+        if event.event_type != 'modified' or event.is_directory or (not event.src_path.endswith("out.json")):
             return
 
         move = app.io.readOutput()
@@ -81,7 +91,12 @@ color = 'white'
 app = YSYLApp()
 observer = Observer()
 input_event = Event()
-observer.schedule(input_event, out_path)
+
+if windows_run:
+    observer.schedule(input_event, ".", recursive=True)
+else:
+    observer.schedule(input_event, out_path)
+
 observer.start()
 
 
