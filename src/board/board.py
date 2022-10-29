@@ -147,7 +147,10 @@ class Board(GridView):
     def perform_player_move(self):
         if self.freezed: return
         self.turn_count = self.turn_count + 1
+
         move = self.move_to_json()
+        if move == None: return
+
         self.move_handler()
         self.io.writeInput(move)
         self.info.notification_widget.set_notification(Notification.AI_THINKING)
@@ -211,7 +214,8 @@ class Board(GridView):
         if opt == SelectedOption.move:
             if len(pieces) > 0:
                 curr_orientation = pieces[0]
-            else: return
+            else: 
+                return None
             move['src']['pos_x'], move['src']['pos_y'] = self.get_from_coords()
             move['des']['orientation'] = 0
             move['src']['pile'] = False
@@ -230,8 +234,8 @@ class Board(GridView):
                 curr_orientation = pieces[0]
             else: return
 
-            move['src']['pos_x'] = -1
-            move['src']['pos_y'] = -1
+            move['src']['pos_x'] = x
+            move['src']['pos_y'] = y
             move['src']['pile'] = False
 
             if curr_orientation == Piece.BL or curr_orientation == Piece.WL:

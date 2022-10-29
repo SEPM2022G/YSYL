@@ -61,13 +61,10 @@ class Event(FileSystemEventHandler):
     def dispatch(self, event):
         if event.event_type != 'modified' or event.is_directory:
             return
-        try:
-            move = io.readInput()
-            if move['id'] == self.prev_move_id: return
-            else: self.prev_move_id = move['id']
-        except Exception as e:
-            print(e)
-            return
+
+        move = io.readInput()
+        if move['id'] == self.prev_move_id: return
+        else: self.prev_move_id = move['id']
 
         move_id = uuid.uuid4()
 
