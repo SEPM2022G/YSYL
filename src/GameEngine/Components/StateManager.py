@@ -11,6 +11,7 @@ class StateManager:
                 board_x = 5,
                 board_y = 5):
 
+        self.move_count = 0
         self.white_pieces_pile = white_pieces_pile
         self.black_pieces_pile = black_pieces_pile
         self.board = np.zeros(shape=(board_x, board_y, white_pieces_pile+black_pieces_pile),  dtype=object)
@@ -58,6 +59,7 @@ class StateManager:
         return self.black_pieces_pile
     
     def update_state(self, move):
+        self.move_count = self.move_count + 1
         src_x = move["src"]["pos_x"]
         src_y = move["src"]["pos_y"]
 

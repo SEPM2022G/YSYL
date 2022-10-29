@@ -19,9 +19,7 @@ class Board(GridView):
         super().__init__()
         self.io = io
         self.info = info
-        #TODO: first turn logic
-        self.turn_count = 0;
-        self.first_turn = False;
+        self.move_count = 0;
         self.freezed = False;
         self.update_turn = info.player_widget.next_turn
         self.get_option = info.get_option
@@ -114,13 +112,25 @@ class Board(GridView):
         match opt:
 
             case SelectedOption.lying:
-                if turn == Turn.BLACK: valid_move = self.move_piece(Piece.WL, x, y)
-                elif turn == Turn.WHITE: valid_move = self.move_piece(Piece.BL, x, y)
+                if turn == Turn.BLACK and self.move_count <= 2:
+                    valid_move = self.move_piece(Piece.BL, x, y)
+                elif turn == Turn.WHITE and self.move_count <= 2:
+                    valid_move = self.move_piece(Piece.WL, x, y)
+                elif turn == Turn.BLACK:
+                    valid_move = self.move_piece(Piece.WL, x, y)
+                elif turn == Turn.WHITE:
+                    valid_move = self.move_piece(Piece.BL, x, y)
                 decrease = True
 
             case SelectedOption.standing:
-                if turn == Turn.BLACK: valid_move = self.move_piece(Piece.WS, x, y)
-                elif turn == Turn.WHITE: valid_move = self.move_piece(Piece.BS, x, y)
+                if turn == Turn.BLACK and self.move_count <= 2:
+                    valid_move = self.move_piece(Piece.BS, x, y)
+                elif turn == Turn.WHITE and self.move_count <= 2:
+                    valid_move = self.move_piece(Piece.WS, x, y)
+                elif turn == Turn.BLACK:
+                    valid_move = self.move_piece(Piece.WS, x, y)
+                elif turn == Turn.WHITE:
+                    valid_move = self.move_piece(Piece.BS, x, y)
                 decrease = True
 
             case SelectedOption.stack:
@@ -142,11 +152,12 @@ class Board(GridView):
                 valid_move = self.rotate_piece(x, y)
 
         if (not self.hold) and valid_move:
-            self.update_turn(decrease)
+            first_turn = (self.move_count <= 2)
+            self.update_turn(decrease, first_turn)
 
     def perform_player_move(self):
         if self.freezed: return
-        self.turn_count = self.turn_count + 1
+        self.move_count = self.move_count + 1
 
         move = self.move_to_json()
         if move == None: return
@@ -158,7 +169,7 @@ class Board(GridView):
 
 
     def perform_ai_move(self, move):
-        self.turn_count = self.turn_count + 1
+        self.move_count = self.move_count + 1
         self.info.notification_widget.set_notification(Notification.NORMAL)
 
         if int(move['outcome']) == 1:
@@ -176,13 +187,14 @@ class Board(GridView):
             self.freezed = False
 
     def move_to_json(self): 
+        first_turn = (self.move_count <= 2)
         move = {
             "src": {
             },
             "des": {
             },
             "pieces": 1,
-            "first_turn": self.first_turn
+            "first_turn": first_turn
         }
 
         move['id'] = str(uuid.uuid4())
