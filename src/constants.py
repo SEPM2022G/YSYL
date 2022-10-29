@@ -8,8 +8,8 @@ class Notification(Enum):
     ERROR = "A error occurred"
     INVALID_MOVE = "The move is not valid, try again"
     AI_THINKING = "The ai is thinking..."
-    VICTORY = "You won :)"
-    LOSS = "You lost :("
+    VICTORY = "You won :), press q to quit"
+    LOSS = "You lost :(, press q to quit"
 
 
 class Turn(Enum):
@@ -31,7 +31,6 @@ class Piece(Enum):
 
 
 class SelectedOption(Enum):
-    # TODO: should be capital letters
     lying = "Place a laying piece"
     standing = "Place a standing piece"
     rotate = "Rotate a piece"

@@ -11,6 +11,7 @@ class StateManager:
                 board_x = 5,
                 board_y = 5):
 
+        self.move_count = 0
         self.white_pieces_pile = white_pieces_pile
         self.black_pieces_pile = black_pieces_pile
         self.board = np.zeros(shape=(board_x, board_y, white_pieces_pile+black_pieces_pile),  dtype=object)
@@ -58,6 +59,7 @@ class StateManager:
         return self.black_pieces_pile
     
     def update_state(self, move):
+        self.move_count = self.move_count + 1
         src_x = move["src"]["pos_x"]
         src_y = move["src"]["pos_y"]
 
@@ -93,9 +95,17 @@ class StateManager:
 
                     break
         else:
-            ###Add pieces to new destination
+            ###Remove where the pieces were 
             pieces = move["pieces"]
+            src_z = self.board[src_x, src_y]
 
+            for i in range(0, src_z.size):
+                if src_z[i] == 0:
+                    for j in range(0, pieces):
+                        src_z[i-j-1] = 0
+                    break
+
+            ###Add pieces to new destination
             for i in range(0, des_z.size):
                 if des_z[i] == 0:
                     for j in range(0, pieces-1):
@@ -105,14 +115,6 @@ class StateManager:
                     des_z[i+pieces-1] = Piece(ori, color)
                     break
             
-            ###Remove where the pieces were 
-            src_z = self.board[src_x, src_y]
-
-            for i in range(0, src_z.size):
-                if src_z[i] == 0:
-                    for j in range(0, pieces):
-                        src_z[i-j-1] = 0
-                    break
 
         return self.get_state()
     

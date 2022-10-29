@@ -21,22 +21,28 @@ class MoveController:
     def set_difficulty(self, difficulty : Difficulty):
         self.difficulty = difficulty
     
-    def _easy_move(self, state_manager):
-        moves = self._create_moves_that_player_can_make(state_manager.get_state(), self.color)
+    def _easy_move(self, color, state_manager):
+        moves = self._create_moves_that_player_can_make(state_manager.get_state(),color)
         self.best_moves.append((moves[random.randint(0, len(moves)-1)], 0))
 
     def move(self):
         print(f"AI {self.difficulty}")
+        #First turn logic
+        color = self.color
+        if self.state_manager.move_count <= 2 and self.color == Color.WHITE:
+            color = Color.BLACK
+        if self.state_manager.move_count <= 2 and self.color == Color.BLACK:
+            color = Color.WHITE
 
         if self.difficulty.value == Difficulty.EASY.value:
-            self._easy_move(self.state_manager)
+            self._easy_move(color, self.state_manager)
         elif self.difficulty.value == Difficulty.MEDIUM.value:
             self.init_depth = 4
             if self.medium_hard_move:
-                self._minimax(self.init_depth, self.color, self.state_manager)
+                self._minimax(self.init_depth, color, self.state_manager)
                 self.medium_hard_move = False 
             else:
-                self._easy_move(self.state_manager)
+                self._easy_move(color, self.state_manager)
                 self.medium_hard_move = True
         else:
             self.init_depth = 4
