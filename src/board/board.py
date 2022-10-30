@@ -112,24 +112,24 @@ class Board(GridView):
 
             case SelectedOption.lying:
                 if turn == Turn.BLACK and self.move_count <= 2:
-                    valid_move = self.move_piece(Piece.BL, x, y)
+                    valid_move = self.move_piece(Piece.WL, x, y)
                 elif turn == Turn.WHITE and self.move_count <= 2:
-                    valid_move = self.move_piece(Piece.WL, x, y)
-                elif turn == Turn.BLACK:
-                    valid_move = self.move_piece(Piece.WL, x, y)
-                elif turn == Turn.WHITE:
                     valid_move = self.move_piece(Piece.BL, x, y)
+                elif turn == Turn.BLACK:
+                    valid_move = self.move_piece(Piece.BL, x, y)
+                elif turn == Turn.WHITE:
+                    valid_move = self.move_piece(Piece.WL, x, y)
                 decrease = True
 
             case SelectedOption.standing:
                 if turn == Turn.BLACK and self.move_count <= 2:
-                    valid_move = self.move_piece(Piece.BS, x, y)
+                    valid_move = self.move_piece(Piece.WS, x, y)
                 elif turn == Turn.WHITE and self.move_count <= 2:
-                    valid_move = self.move_piece(Piece.WS, x, y)
-                elif turn == Turn.BLACK:
-                    valid_move = self.move_piece(Piece.WS, x, y)
-                elif turn == Turn.WHITE:
                     valid_move = self.move_piece(Piece.BS, x, y)
+                elif turn == Turn.BLACK:
+                    valid_move = self.move_piece(Piece.BS, x, y)
+                elif turn == Turn.WHITE:
+                    valid_move = self.move_piece(Piece.WS, x, y)
                 decrease = True
 
             case SelectedOption.stack:

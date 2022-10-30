@@ -45,9 +45,9 @@ class YSYLApp(App):
         self.info.player_widget.set_n_black_pieces(15)
 
         if color == 'white':
-            self.info.player_widget.set_player_color(PlayerType.PLAYER1, PlayerType.AI)
-        elif color == 'black':
             self.info.player_widget.set_player_color(PlayerType.AI, PlayerType.PLAYER1)
+        elif color == 'black':
+            self.info.player_widget.set_player_color(PlayerType.PLAYER1, PlayerType.AI)
         self.reset()
 
     def reset(self):
