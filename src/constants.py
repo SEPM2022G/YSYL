@@ -24,10 +24,10 @@ class PlayerType(Enum):
 
 
 class Piece(Enum):
-    BS =  "\U0001F537" # "⯊"  # BLACK_STANDING
-    WS =  "\U0001F536" # "◠"  # WHITE_STANDING
-    BL =  "\U0001F535" # "▬"  # BLACK_LYING
-    WL =  "\U0001F7E0" # "▭"  # WHITE_LYING
+    BS = "◠"  # BLACK_STANDING
+    WS = "⯊"  # WHITE_STANDING
+    BL = "▭"  # BLACK_LYING
+    WL = "▬"  # WHITE_LYING
 
 
 class SelectedOption(Enum):
