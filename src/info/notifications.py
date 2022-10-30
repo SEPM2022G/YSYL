@@ -35,20 +35,6 @@ class Notifications(Widget):
             Align.center(self.notification.value, vertical="middle"),
             style=notification_style)
 
-    def on_click(self) -> None:
-        # TODO: this is just a place holder for when we will get
-        # a proper status imput. I just to test.
-        if self.notification == Notification.NORMAL:
-            self.set_notification(Notification.ERROR)
-        elif self.notification == Notification.ERROR:
-            self.set_notification(Notification.INVALID_MOVE)
-        elif self.notification == Notification.INVALID_MOVE:
-            self.set_notification(Notification.VICTORY)
-        elif self.notification == Notification.VICTORY:
-            self.set_notification(Notification.LOSS)
-        else:
-            self.set_notification(Notification.NORMAL)
-
     def set_notification(self, notification: Notification) -> None:
         self.notification = notification
 
