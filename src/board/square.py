@@ -33,12 +33,12 @@ class Square(Widget):
             if(self.x % 2 == 0 and self.y % 2 == 0):
                 color = "on black"
             else:
-                 color = "on white"
+                 color = "on light_steel_blue1"
         else:    
             if(self.x % 2 != 0 and self.y % 2 != 0):
                 color = "on black"
             else:
-                 color = "on white"
+                 color = "on light_steel_blue1"
         
         
         return Panel(self.render_pieces(),
