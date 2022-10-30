@@ -10,21 +10,8 @@ from src.info.info import Info
 from src.constants import PlayerType, SelectedOption, Notification
 from src.GameEngine.Components.IOProcessor import IOProcessor
 
-windows_run = False
-mac_run = False
-
-if os.name == 'nt':
-    windows_run = True
-
-if os.name == 'darwin':
-    mac_run = True
-
-if windows_run or mac_run:
-    input_path = os.path.abspath("src/input/in.json")
-    out_path = os.path.abspath("src/output/out.json")
-else:
-    input_path = 'src/input/in.json'
-    out_path = 'src/output/out.json'
+input_path = os.path.abspath("src/input/in.json")
+out_path = os.path.abspath("src/output/out.json")
 
 ui_only = False
 argv = sys.argv[1:]
@@ -76,9 +63,12 @@ class Event(FileSystemEventHandler):
         if event.event_type != 'modified' or event.is_directory or (not event.src_path.endswith("out.json")):
             return
 
-        move = app.io.readOutput()
-        if move['id'] == self.prev_move_id:
+        try:
+            move = app.io.readOutput()
+        except:
             return
+
+        if move['id'] == self.prev_move_id: return
 
         self.prev_move_id = move['id']
         app.board.perform_ai_move(move)
@@ -96,10 +86,7 @@ app = YSYLApp()
 observer = Observer()
 input_event = Event()
 
-if windows_run or mac_run:
-    observer.schedule(input_event, ".", recursive=True)
-else:
-    observer.schedule(input_event, out_path)
+observer.schedule(input_event, ".", recursive=True)
 
 observer.start()
 
