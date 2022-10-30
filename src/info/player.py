@@ -30,7 +30,7 @@ class Player(Widget):
         MARKDOWN += f"( {Piece.BS.value} and {Piece.BL.value} ) - {self.player1.value}\n\n"
         MARKDOWN += f"{self.n_white_pieces} white pieces "
         MARKDOWN += f"( {Piece.WS.value} and {Piece.WL.value} ) - {self.player2.value}"
-        return Markdown(MARKDOWN)
+        return Markdown(MARKDOWN, style="green")
 
     def set_turn(self, turn: Turn) -> Turn:
         self.turn = turn
