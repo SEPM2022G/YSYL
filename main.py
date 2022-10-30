@@ -11,18 +11,22 @@ from src.constants import PlayerType, SelectedOption, Notification
 from src.GameEngine.Components.IOProcessor import IOProcessor
 
 windows_run = False
+mac_run = False
 
 if os.name == 'nt':
     windows_run = True
 
-if windows_run:
+if os.name == 'darwin':
+    mac_run = True
+
+if windows_run or mac_run:
     input_path = os.path.abspath("src/input/in.json")
     out_path = os.path.abspath("src/output/out.json")
 else:
     input_path = 'src/input/in.json'
     out_path = 'src/output/out.json'
-ui_only = False
 
+ui_only = False
 argv = sys.argv[1:]
 opts, args = getopt.getopt(argv, '', ['ui'])
 
@@ -92,7 +96,7 @@ app = YSYLApp()
 observer = Observer()
 input_event = Event()
 
-if windows_run:
+if windows_run or mac_run:
     observer.schedule(input_event, ".", recursive=True)
 else:
     observer.schedule(input_event, out_path)

@@ -19,6 +19,7 @@ from src.GameEngine.Objects.Enums import Color, Difficulty
 argv = sys.argv[1:]
 opts, args = getopt.getopt(argv, '', ['diff=', 'color=', 'config='])
 windows_run = False
+mac_run = False
 
 if len(args) != 2:
     print(
@@ -32,7 +33,11 @@ if len(args) != 2:
 if os.name == 'nt':
     windows_run = True
 
-if windows_run:
+if os.name == 'darwin':
+    mac_run = True
+
+
+if windows_run or mac_run:
     input_path = os.path.abspath("src/input/in.json")
     output_path = os.path.abspath("src/output/out.json")
 else:
@@ -124,7 +129,7 @@ def main():
     input_event = Event()
     observer = Observer()
 
-    if windows_run:
+    if windows_run or mac_run:
         observer.schedule(input_event, ".", recursive=True)
     else:
         observer.schedule(input_event, input_path)
